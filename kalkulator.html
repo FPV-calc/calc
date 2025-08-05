@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="appTitle">Kalkulator Czasu Lotu Drona</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light mode default */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease;
+        }
+        .container {
+            background-color: #ffffff; /* Light mode default */
+            padding: 32px;
+            padding-top: 60px; /* Added padding to make space for the toggle button */
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* For theme toggle positioning */
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155; /* Light mode default */
+            transition: color 0.3s ease;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1; /* Light mode default */
+            border-radius: 8px;
+            font-size: 16px;
+            color: #1e293b; /* Light mode default */
+            background-color: #ffffff; /* Light mode default */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease, color 0.3s ease;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+        button#calculateBtn { /* Specific selector for the calculate button */
+            width: 100%;
+            padding: 14px;
+            background-color: #fcd34d; /* Yellow color */
+            color: #1f2937; /* Dark text for contrast */
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            /* Always glowing shadow */
+            box-shadow: 0 0 18px rgba(252, 211, 77, 0.9), 0 6px 12px rgba(252, 211, 77, 0.6); /* More prominent glow */
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        button#calculateBtn:hover {
+            background-color: #fbbf24; /* Darker yellow on hover */
+            transform: scale(1.03); /* Slightly enlarge on hover */
+            box-shadow: 0 0 25px rgba(252, 211, 77, 1), 0 8px 16px rgba(252, 211, 77, 0.8); /* Even more intense glow on hover */
+        }
+        button#calculateBtn:active {
+            background-color: #f59e0b; /* Even darker yellow on active */
+            transform: translateY(0); /* Reset transform on active */
+            box-shadow: 0 0 10px rgba(252, 211, 77, 0.6), 0 2px 5px rgba(252, 211, 77, 0.3); /* Less intense shadow on active */
+        }
+        .result-box {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #e0f2fe; /* Light mode default */
+            border: 1px solid #90cdf4; /* Light mode default */
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px; /* Slightly smaller font for multiple lines */
+            font-weight: 700;
+            color: #0c4a6e; /* Light mode default */
+            line-height: 1.5;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        .result-box p {
+            margin-bottom: 8px;
+        }
+        .result-box p:last-child {
+            margin-bottom: 0;
+        }
+        .error-message {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: #fee2e2; /* Light mode default */
+            border: 1px solid #ef4444; /* Light mode default */
+            border-radius: 8px;
+            color: #dc2626; /* Light mode default */
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        .info-message {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: #eff6ff; /* Light mode default */
+            border: 1px solid #bfdbfe; /* Light mode default */
+            border-radius: 8px;
+            color: #1e40af; /* Light mode default */
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        .throttle-group, .energy-loss-group { /* Added energy-loss-group */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e2e8f0; /* Light mode default */
+            border-radius: 8px;
+            background-color: #f8fafc; /* Light mode default */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .throttle-group h3, .energy-loss-group h3 { /* Added energy-loss-group h3 */
+            grid-column: 1 / -1;
+            text-align: center;
+            font-weight: 700;
+            color: #475569; /* Light mode default */
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+        .suggestions-box, .warnings-box { /* Combined styling for common properties */
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        /* Updated suggestions-box for blue theme - slightly different shade */
+        .suggestions-box {
+            background-color: #e0f7fa; /* Light cyan/blue for suggestions */
+            border: 1px solid #80deea;
+            color: #006064;
+        }
+        .warnings-box {
+            background-color: #fee2e2; /* Light red for warnings */
+            border: 1px solid #ef4444;
+            color: #dc2626;
+        }
+        .suggestions-box h3, .warnings-box h3 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .suggestions-box ul, .warnings-box ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .suggestions-box li, .warnings-box li {
+            margin-bottom: 5px;
+        }
+
+        /* Styling for the new Thrust to Weight table */
+        #thrustToWeightTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #334155;
+            font-weight: 400; /* Normal font weight for table content */
+            transition: color 0.3s ease;
+        }
+        #thrustToWeightTable th, #thrustToWeightTable td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: center;
+        }
+        #thrustToWeightTable thead th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        #thrustToWeightTable tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        #thrustToWeightTable tbody tr.highlighted {
+            background-color: #fff9c4; /* Light yellow highlight */
+            font-weight: 600;
+            color: #795548;
+        }
+
+        /* Dark Mode Styles (zmieniony na łagodniejszy) */
+        body.dark-mode {
+            background-color: #212529; /* Ciemnoszary, bardziej miękki */
+        }
+        body.dark-mode .container {
+            background-color: #2c313a; /* Łagodniejszy ciemny kontener */
+            border-color: #4a5568;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode label {
+            color: #e2e8f0; /* Jasny tekst, ale nie czysta biel */
+        }
+        body.dark-mode input[type="number"] {
+            background-color: #3b414d; /* Ciemniejszy kolor tła inputów */
+            border-color: #5d6675;
+            color: #e2e8f0; /* Jasny tekst dla inputów */
+        }
+        body.dark-mode input[type="number"]:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.25);
+        }
+        body.dark-mode h1 {
+            color: #e2e8f0; /* Jasny tekst dla głównego tytułu */
+        }
+        body.dark-mode .result-box {
+            background-color: #2a699c; /* Ciemniejszy, stonowany niebieski dla rezultatu */
+            border-color: #4d8fbd;
+            color: #ffffff; /* Biały tekst, aby był czytelny na ciemnym tle */
+        }
+        body.dark-mode .error-message {
+            background-color: #9c2e2e; /* Stonowana czerwień dla błędu */
+            border-color: #c54242;
+            color: #ffffff;
+        }
+        body.dark-mode .info-message {
+            background-color: #3b609c; /* Stonowany niebieski dla informacji */
+            border-color: #5d81bd;
+            color: #ffffff;
+        }
+        body.dark-mode .throttle-group, body.dark-mode .energy-loss-group { /* Added energy-loss-group */
+            background-color: #313740; /* Stonowany ciemny kolor tła grupy */
+            border-color: #5d6675;
+        }
+        body.dark-mode .throttle-group h3, body.dark-mode .energy-loss-group h3 { /* Added energy-loss-group h3 */
+            color: #e2e8f0; /* Jasny tekst dla tytułu grupy */
+        }
+        body.dark-mode #themeToggle {
+            color: #e2e8f0; /* Jasna ikona w trybie ciemnym */
+        }
+        /* Updated suggestions-box for dark blue theme - slightly different shade */
+        body.dark-mode .suggestions-box {
+            background-color: #005a5a; /* Stonowany ciemny turkus */
+            border-color: #008f8f;
+            color: #ffffff;
+        }
+        body.dark-mode .warnings-box {
+            background-color: #9c2e2e; /* Stonowana czerwień */
+            border-color: #c54242;
+            color: #ffffff;
+        }
+        body.dark-mode #languageToggle {
+            color: #e2e8f0;
+            background-color: #4a5568; /* Ciemniejsze tło */
+        }
+        
+        #themeToggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #475569;
+            transition: color 0.3s ease;
+            z-index: 10;
+            outline: none;
+            box-shadow: none;
+        }
+        #languageToggle {
+            position: absolute;
+            top: 15px;
+            right: 60px; /* Positioned next to theme toggle */
+            background: none;
+            border: none;
+            font-size: 16px; /* Smaller font for text */
+            font-weight: bold;
+            cursor: pointer;
+            color: #475569; /* Default icon color */
+            transition: color 0.3s ease;
+            z-index: 10;
+            outline: none;
+            box-shadow: none;
+            padding: 5px 10px; /* Add some padding */
+            border-radius: 8px; /* Rounded corners */
+            background-color: #e2e8f0; /* Light background */
+        }
+        body.dark-mode #languageToggle {
+            color: #e2e8f0;
+            background-color: #4a5568; /* Dark background */
+        }
+        #languageToggle:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Styling for the advanced info modal/panel */
+        #advancedInfoPanel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background-color: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode #advancedInfoPanel {
+            background-color: #2c313a;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        #advancedInfoPanel .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #475569;
+            transition: color 0.3s ease;
+        }
+        body.dark-mode #advancedInfoPanel .close-btn {
+            color: #e2e8f0;
+        }
+        #advancedInfoPanel h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        #advancedInfoPanel p {
+            margin-bottom: 1rem;
+        }
+
+        /* Dark mode styles for the new table */
+        body.dark-mode #thrustToWeightTable {
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        body.dark-mode #thrustToWeightTable th, body.dark-mode #thrustToWeightTable td {
+            border-color: #4a5568;
+        }
+        body.dark-mode #thrustToWeightTable thead th {
+            background-color: #3b414d;
+            color: #e2e8f0;
+        }
+        body.dark-mode #thrustToWeightTable tbody tr.highlighted {
+            background-color: #6d640b; /* Darker yellow/gold highlight */
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="themeToggle" aria-label="Przełącz tryb ciemny/jasny">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button id="languageToggle">PL/EN/ES</button>
+
+        <h1 id="calculatorTitle" class="text-3xl font-bold text-center text-gray-800 mb-8">Kalkulator Czasu Lotu Drona</h1>
+
+        <div class="input-group">
+            <label id="batteryCapacityWhLabel" for="batteryCapacityWh">Pojemność baterii (Wh):</label>
+            <input type="number" id="batteryCapacityWh" placeholder="Np. 72" value="72" min="0" step="0.1">
+        </div>
+
+        <div class="input-group">
+            <label id="batteryCapacityMilliAhLabel" for="batteryCapacityMilliAh">Pojemność baterii (mAh):</label>
+            <input type="number" id="batteryCapacityMilliAh" placeholder="Np. 5000" value="5000" min="0" step="1">
+        </div>
+
+        <div class="input-group">
+            <label id="batteryCRatingLabel" for="batteryCRating">C baterii:</label>
+            <input type="number" id="batteryCRating" placeholder="Np. 30" value="30" min="1" step="1">
+        </div>
+
+        <div class="input-group">
+            <label id="batteryMassGLabel" for="batteryMassG">Masa baterii (g):</label>
+            <input type="number" id="batteryMassG" placeholder="Np. 700" value="700" min="0" step="1">
+        </div>
+
+        <div class="input-group">
+            <label id="droneMassGLabel" for="droneMassG">Masa samego drona (bez baterii i ładunku) (g):</label>
+            <input type="number" id="droneMassG" placeholder="Np. 1500" value="1500" min="0" step="1">
+        </div>
+
+        <div class="input-group">
+            <label id="additionalPayloadMassGLabel" for="additionalPayloadMassG">Masa dodatkowego ładunku (np. kamera) (g):</label>
+            <input type="number" id="additionalPayloadMassG" placeholder="Np. 500" value="500" min="0" step="1">
+        </div>
+
+        <div class="input-group">
+            <label id="escPowerAmpsLabel" for="escPowerAmps">Moc ESC (A):</label>
+            <input type="number" id="escPowerAmps" placeholder="Np. 40" value="40" min="0" step="1">
+        </div>
+
+        <div class="energy-loss-group">
+            <h3 id="energyLossParamsTitle">Parametry Strat Energii</h3>
+            <div class="input-group col-span-2">
+                <label id="batteryEfficiencyPercentLabel" for="batteryEfficiencyPercent">Ile % baterii wykorzystasz podczas lotu:</label>
+                <input type="number" id="batteryEfficiencyPercent" placeholder="Np. 80" value="80" min="1" max="100" step="1">
+            </div>
+            <div class="input-group col-span-2 hidden">
+                <label id="thermalLossPercentLabel" for="thermalLossPercentInput">Stałe straty cieplne w systemie (%):</label>
+                <input type="number" id="thermalLossPercentInput" placeholder="Np. 22" value="22" min="0" max="100" step="0.1">
+            </div>
+        </div>
+
+        <div class="throttle-group">
+            <h3 id="motorSpecTitle">Specyfikacja silnika (Thrust vs. Power)</h3>
+            <div class="input-group col-span-2">
+                <label id="measurementVoltageLabel" for="measurementVoltage">Napięcie pomiarowe silnika (V): (Jeśli jest taka możliwość podaj dane dla 22V lub jak najbliżej tego)</label>
+                <input type="number" id="measurementVoltage" placeholder="Np. 24" value="24" min="1" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label id="thrust30GLabel" for="thrust30G">Thrust (g) @ 30% przepustnicy:</label>
+                <input type="number" id="thrust30G" placeholder="Np. 500" value="500" min="0" step="1">
+            </div>
+            <div class="input-group">
+                <label id="power30WLabel" for="power30W">Power (W) @ 30% przepustnicy:</label>
+                <input type="number" id="power30W" placeholder="Np. 50" value="50" min="0" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label id="thrust50GLabel" for="thrust50G">Thrust (g) @ 50% przepustnicy:</label>
+                <input type="number" id="thrust50G" placeholder="Np. 1000" value="1000" min="0" step="1">
+            </div>
+            <div class="input-group">
+                <label id="power50WLabel" for="power50W">Power (W) @ 50% przepustnicy:</label>
+                <input type="number" id="power50W" placeholder="Np. 120" value="120" min="0" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label id="thrust70GLabel" for="thrust70G">Thrust (g) @ 70% przepustnicy:</label>
+                <input type="number" id="thrust70G" placeholder="Np. 1500" value="1500" min="0" step="1">
+            </div>
+            <div class="input-group">
+                <label id="power70WLabel" for="power70W">Power (W) @ 70% przepustnicy:</label>
+                <input type="number" id="power70W" placeholder="Np. 200" value="200" min="0" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label id="thrust100GLabel" for="thrust100G">Thrust (g) @ 100% przepustnicy:</label>
+                <input type="number" id="thrust100G" placeholder="Np. 2500" value="2500" min="0" step="1">
+            </div>
+            <div class="input-group">
+                <label id="power100WLabel" for="power100W">Power (W) @ 100% przepustnicy:</label>
+                <input type="number" id="power100W" placeholder="Np. 400" value="400" min="0" step="0.1">
+            </div>
+        </div>
+
+        <div class="info-message">
+            <p id="infoMotors">Liczba silników (quadcopter): 4</p>
+            <p id="infoThrustCalculation">Ciąg silnika przy zawisie obliczany jako: (Masa Całkowita * 2.5) / 4</p>
+            <p id="infoFlightTimeCalculation">Czas lotu obliczany na podstawie efektywnej pojemności baterii (Wh * Wykorzystany % baterii) i całkowitej mocy silników.</p>
+            <p id="infoPowerCorrection">Moc silników korygowana o straty na podstawie napięcia pomiarowego silnika.</p>
+            <p id="infoCRatingESCInfo">Wartość "C baterii" oraz "Moc ESC (A)" są informacyjne i nie wpływają na obliczenia czasu lotu.</p>
+        </div>
+
+        <button id="calculateBtn">Oblicz czas lotu</button>
+
+        <div id="result" class="result-box hidden">
+            <p><span id="estimatedFlightTime">Szacowany czas lotu:</span> <span id="flightTimeMinutes">0</span> <span id="minutesUnit">minut</span></p>
+            <p><span id="requiredThrust">Wymagany ciąg na silnik w zawisie:</span> <span id="requiredThrustG">0</span> g</p>
+            <p><span id="requiredPower">Wymagana moc na silnik w zawisie (skorygowana):</span> <span id="requiredPowerW">0</span> W</p>
+            <p><span id="voltageCorrectionFactorText">Współczynnik korekcji napięcia:</span> <span id="voltageCorrectionFactor">1.0</span></p>
+            <p><span id="targetVoltageText">Docelowe napięcie robocze:</span> 22V</p>
+            <hr class="my-4 border-gray-300 dark:border-gray-600">
+            <p><span id="maxBatteryAmpsText">Maks. ciągłe natężenie baterii:</span> <span id="maxBatteryAmps">0</span> A</p>
+            <p><span id="maxEscAmpsText">Maks. obciążenie ESC (całkowite):</span> <span id="maxEscAmps">0</span> A</p>
+            <p><span id="maxMotorAmpsText">Maks. obciążenie silników (całkowite):</span> <span id="maxMotorAmps">0</span> A</p>
+            <p><span id="thrustToWeightRatioText">Współczynnik ciągu do masy (TWR):</span> <span id="thrustToWeightRatio">0</span></p>
+            
+            <!-- Nowa tabela objaśniająca współczynnik ciągu do masy -->
+            <div id="thrustToWeightTableContainer" class="mt-4"></div>
+        </div>
+
+        <div id="warnings" class="warnings-box hidden">
+            <h3 id="warningsTitle">Uwagi:</h3>
+            <ul id="warningList">
+            </ul>
+        </div>
+
+        <div id="suggestions" class="suggestions-box hidden">
+            <h3 id="suggestionsTitle">Sugestie:</h3>
+            <ul id="suggestionList">
+            </ul>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden">
+            <span id="errorMessagePrefix">Wystąpił błąd:</span> <span id="errorText"></span>
+        </div>
+
+        <button id="showAdvancedInfoBtn" class="w-full mt-4 py-3 px-6 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-300 transform hover:scale-105">
+            Zaawansowane
+        </button>
+    </div>
+
+    <!-- Advanced Info Panel Modal -->
+    <div id="advancedInfoPanel" class="hidden">
+        <button id="closeAdvancedInfoBtn" class="close-btn" aria-label="Zamknij">
+            <i class="fas fa-times"></i>
+        </button>
+        <h2 id="advancedInfoTitle">Informacje zaawansowane</h2>
+        <div id="advancedInfoContent">
+            <p>Tutaj znajdą się Twoje zaawansowane informacje. Czekam na Twoje dane, które mam tu wstawić.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultDiv = document.getElementById('result');
+            const flightTimeMinutesSpan = document.getElementById('flightTimeMinutes');
+            const requiredThrustGSpan = document.getElementById('requiredThrustG');
+            const requiredPowerWSpan = document.getElementById('requiredPowerW');
+            const voltageCorrectionFactorSpan = document.getElementById('voltageCorrectionFactor');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            const errorTextSpan = document.getElementById('errorText');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const languageToggle = document.getElementById('languageToggle');
+            const thrustToWeightRatioSpan = document.getElementById('thrustToWeightRatio');
+            const thrustToWeightTableContainer = document.getElementById('thrustToWeightTableContainer');
+            const suggestionsBox = document.getElementById('suggestions');
+            const suggestionList = document.getElementById('suggestionList');
+            const warningsBox = document.getElementById('warnings');
+            const warningList = document.getElementById('warningList');
+            const showAdvancedInfoBtn = document.getElementById('showAdvancedInfoBtn');
+            const advancedInfoPanel = document.getElementById('advancedInfoPanel');
+            const closeAdvancedInfoBtn = document.getElementById('closeAdvancedInfoBtn');
+
+            // Stałe wartości
+            const NUM_MOTORS = 4;
+            const GRAVITY = 9.81;
+            const NEWTONS_TO_GRAMS = 101.9716;
+            const WORKING_VOLTAGE = 22; // Nasze docelowe napięcie robocze
+            const LOW_EFFICIENCY_THRESHOLD = 2.2; // g/W - Próg niskiej efektywności
+
+            // Language content
+            const languages = {
+                pl: {
+                    appTitle: 'Kalkulator Czasu Lotu Drona',
+                    calculatorTitle: 'Kalkulator Czasu Lotu Drona',
+                    batteryCapacityWhLabel: 'Pojemność baterii (Wh):',
+                    batteryCapacityMilliAhLabel: 'Pojemność baterii (mAh):',
+                    batteryCRatingLabel: 'C baterii:',
+                    batteryMassGLabel: 'Masa baterii (g):',
+                    droneMassGLabel: 'Masa samego drona (bez baterii i ładunku) (g):',
+                    additionalPayloadMassGLabel: 'Masa dodatkowego ładunku (np. kamera) (g):',
+                    escPowerAmpsLabel: 'Moc ESC (A):',
+                    energyLossParamsTitle: 'Parametry Strat Energii',
+                    batteryEfficiencyPercentLabel: 'Ile % baterii wykorzystasz podczas lotu:',
+                    thermalLossPercentLabel: 'Stałe straty cieplne w systemie (%):',
+                    motorSpecTitle: 'Specyfikacja silnika (Thrust vs. Power)',
+                    measurementVoltageLabel: 'Napięcie pomiarowe silnika (V): (Jeśli jest taka możliwość podaj dane dla 22V lub jak najbliżej tego)',
+                    thrust30GLabel: 'Thrust (g) @ 30% przepustnicy:',
+                    power30WLabel: 'Power (W) @ 30% przepustnicy:',
+                    thrust50GLabel: 'Thrust (g) @ 50% przepustnicy:',
+                    power50WLabel: 'Power (W) @ 50% przepustnicy:',
+                    thrust70GLabel: 'Thrust (g) @ 70% przepustnicy:',
+                    power70WLabel: 'Power (W) @ 70% przepustnicy:',
+                    thrust100GLabel: 'Thrust (g) @ 100% przepustnicy:',
+                    power100WLabel: 'Power (W) @ 100% przepustnicy:',
+                    infoMotors: 'Liczba silników (quadcopter): 4',
+                    infoThrustCalculation: 'Ciąg silnika przy zawisie obliczany jako: (Masa Całkowita * 2.5) / 4',
+                    infoFlightTimeCalculation: 'Czas lotu obliczany na podstawie efektywnej pojemności baterii (Wh * Wykorzystany % baterii) i całkowitej mocy silników.',
+                    infoPowerCorrection: 'Moc silników korygowana o straty na podstawie napięcia pomiarowego silnika.',
+                    infoCRatingESCInfo: 'Wartość "C baterii" oraz "Moc ESC (A)" są informacyjne i nie wpływają na obliczenia czasu lotu.',
+                    calculateButton: 'Oblicz czas lotu',
+                    estimatedFlightTime: 'Szacowany czas lotu:',
+                    minutesUnit: 'minut',
+                    requiredThrust: 'Wymagany ciąg na silnik w zawisie:',
+                    requiredPower: 'Wymagana moc na silnik w zawisie (skorygowana):',
+                    voltageCorrectionFactorText: 'Współczynnik korekcji napięcia:',
+                    targetVoltageText: 'Docelowe napięcie robocze:',
+                    maxBatteryAmpsText: 'Maks. ciągłe natężenie baterii:',
+                    maxEscAmpsText: 'Maks. obciążenie ESC (całkowite):',
+                    maxMotorAmpsText: 'Maks. obciążenie silników (całkowite):',
+                    thrustToWeightRatioText: 'Współczynnik ciągu do masy (TWR):',
+                    errorMessagePrefix: 'Wystąpił błąd:',
+                    unexpectedError: 'Wystąpił nieoczekiwany błąd podczas obliczeń. Spróbuj ponownie.',
+                    warningsTitle: 'Uwagi:',
+                    suggestionsTitle: 'Sugestie:',
+                    advancedInfoButton: 'Zaawansowane',
+                    advancedInfoTitle: 'Informacje zaawansowane',
+                    advancedInfoContentPlaceholder: 'Tutaj znajdą się Twoje zaawansowane informacje. Czekam na Twoje dane, które mam tu wstawić.',
+                    errorBatteryEfficiency: 'Proszę wprowadzić prawidłową wartość dla "Ile % baterii wykorzystasz podczas lotu" (%). Musi być między 1 a 100.',
+                    errorThermalLoss: 'Proszę wprowadzić prawidłową wartość dla "Stałe straty cieplne w systemie" (%). Musi być między 0 a 99.9.',
+                    errorMassInput: 'Proszę wprowadzić prawidłowe, nieujemne wartości dla masy drona, baterii i dodatkowego ładunku (w gramach).',
+                    errorMeasurementVoltage: 'Proszę wprowadzić prawidłową, dodatnią wartość dla napięcia pomiarowego silnika.',
+                    errorMotorSpecValues: 'Proszę wprowadzić prawidłowe, dodatnie wartości dla wszystkich pól specyfikacji silnika.',
+                    errorThrustIncrease: 'Wartości ciągu (Thrust) muszą rosnąć wraz z procentem przepustnicy (30% < 50% < 70% < 100%) dla Twoich danych silnika.',
+                    errorPowerIncrease: 'Wartości mocy (Power) muszą rosnąć wraz z procentem przepustnicy (30% < 50% < 70% < 100%) dla Twoich danych silnika.',
+                    errorBatteryCapacity: 'Proszę wprowadzić prawidłową, dodatnią wartość dla pojemności baterii (Wh) lub (mAh).',
+                    warningThrustExceeded: (thrustHover, maxThrust) => `Wymagany ciąg na silnik w zawisie (${thrustHover.toFixed(2)} g) przekracza maksymalny ciąg silnika (${maxThrust.toFixed(2)} g) z Twoich danych. Dron prawdopodobnie nie będzie w stanie unieść się lub będzie miał bardzo krótki czas lotu.`,
+                    errorAdjustedPower: 'Nie można obliczyć skorygowanej mocy silnika. Sprawdź wprowadzone dane specyfikacji silnika lub zakres wymaganego ciągu/napięcia.',
+                    errorThermalLossTooHigh: 'Procent strat cieplnych musi być mniejszy niż 100%.',
+                    errorZeroPowerConsumption: 'Całkowite zużycie energii w zawisie nie może wynosić zero. Sprawdź moc silnika lub dane wejściowe.',
+                    warningEscTooLow: (totalMotorAmps, totalEscAmps) => `Silniki mogą pobierać więcej prądu (${totalMotorAmps.toFixed(2)} A) niż Twoje ESC (${totalEscAmps.toFixed(2)} A) są w stanie dostarczyć. Może to prowadzić do uszkodzenia ESC. Rozważ zastosowanie ESC o wyższej mocy (większej liczbie amperów).`,
+                    warningBatteryTooLow: (maxBatteryAmps, requiredAmps) => `Maksymalne ciągłe natężenie baterii (${maxBatteryAmps.toFixed(2)} A) może być niewystarczające dla silników przy pełnym obciążeniu (wymagane ok. ${requiredAmps.toFixed(2)} A). Może to prowadzić do spadków napięcia i uszkodzenia baterii. Należy dobrać baterię o co najmniej 20% mocniejszą od maksymalnego poboru prądu przez silniki.`,
+                    warningLowEfficiency: (throttlePercent, efficiency, threshold) => `Efektywność silnika przy ${throttlePercent}% przepustnicy wynosi ${efficiency.toFixed(2)} g/W, co jest poniżej zalecanego progu ${threshold} g/W. Może to wskazywać na niską jakość lub niedopasowanie silników/śmigieł do Twojej konfiguracji, co skróci czas lotu.`,
+                    suggestionUnderpoweredMotors: (totalMotorAmps, componentMaxAmps, targetMotorAmps, targetMotorAmpsPerMotor) => `Silniki (${totalMotorAmps.toFixed(2)} A) pobierają o ponad 35% mniej prądu niż maksymalna efektywna wydajność Twoich komponentów (ESC i bateria, limit: ${componentMaxAmps.toFixed(2)} A). Aby zwiększyć wydajność i dynamikę lotu, rozważ zastosowanie mocniejszych silników, o łącznym poborze prądu bliższym ${targetMotorAmps.toFixed(2)} A (co oznacza około ${targetMotorAmpsPerMotor.toFixed(2)} A na silnik). Pamiętaj, aby nie przekroczyć limitów ESC.`,
+                    suggestionIncreaseEsc: (suggestedEscAmps) => `Aby wyeliminować ostrzeżenie o ESC, rozważ zastosowanie ESC o mocy co najmniej ${suggestedEscAmps} A (całkowita moc dla wszystkich ESCs).`,
+                    suggestionIncreaseBattery: (suggestedAmps, suggestedMilliAh, suggestedCRating) => {
+                        let text = `Aby wyeliminować ostrzeżenie o baterii, potrzebujesz baterii zdolnej dostarczyć co najmniej ${suggestedAmps} A.`;
+                        if (suggestedMilliAh !== "N/A") { text += ` Możesz zwiększyć pojemność do około ${suggestedMilliAh} mAh (przy obecnym C-ratingu).`; }
+                        if (suggestedCRating !== "N/A") { text += ` Lub zwiększyć C-rating do około ${suggestedCRating}C (przy obecnej pojemności).`; }
+                        return text;
+                    },
+                    suggestionImproveEfficiency: 'W celu poprawy efektywności silników, rozważ zastosowanie innych modeli silników lub dobór bardziej odpowiednich śmigieł. Niska efektywność silników bezpośrednio wpływa na krótszy czas lotu.',
+                    noSuggestions: 'Brak konkretnych sugestii dotyczących optymalizacji na podstawie wprowadzonych danych.',
+                    noWarnings: 'Brak pilnych uwag dotyczących bezpieczeństwa i wydajności na podstawie wprowadzonych danych.',
+                    thrustToWeightTableTitle: 'Interpretacja współczynnika ciągu do masy',
+                    twrRangeColumn: 'Zakres TWR',
+                    droneTypeColumn: 'Typ Drona',
+                    cinematicType: 'Cinematic',
+                    freestyleType: 'Freestyle',
+                    racingType: 'Racing',
+                    unknownType: 'Nieznany'
+                },
+                en: {
+                    appTitle: 'Drone Flight Time Calculator',
+                    calculatorTitle: 'Drone Flight Time Calculator',
+                    batteryCapacityWhLabel: 'Battery Capacity (Wh):',
+                    batteryCapacityMilliAhLabel: 'Battery Capacity (mAh):',
+                    batteryCRatingLabel: 'Battery C-Rating:',
+                    batteryMassGLabel: 'Battery Mass (g):',
+                    droneMassGLabel: 'Drone Mass (without battery & payload) (g):',
+                    additionalPayloadMassGLabel: 'Additional Payload Mass (e.g., camera) (g):',
+                    escPowerAmpsLabel: 'ESC Power (A):',
+                    energyLossParamsTitle: 'Energy Loss Parameters',
+                    batteryEfficiencyPercentLabel: 'How much % of battery will you use during flight:',
+                    thermalLossPercentLabel: 'Constant thermal losses in the system (%):',
+                    motorSpecTitle: 'Motor Specification (Thrust vs. Power)',
+                    measurementVoltageLabel: 'Motor Measurement Voltage (V): (If possible, provide data for 22V or as close as possible)',
+                    thrust30GLabel: 'Thrust (g) @ 30% throttle:',
+                    power30WLabel: 'Power (W) @ 30% throttle:',
+                    thrust50GLabel: 'Thrust (g) @ 50% throttle:',
+                    power50WLabel: 'Power (W) @ 50% throttle:',
+                    thrust70GLabel: 'Thrust (g) @ 70% throttle:',
+                    power70WLabel: 'Power (W) @ 70% throttle:',
+                    thrust100GLabel: 'Thrust (g) @ 100% throttle:',
+                    power100WLabel: 'Power (W) @ 100% throttle:',
+                    infoMotors: 'Number of motors (quadcopter): 4',
+                    infoThrustCalculation: 'Hover thrust per motor calculated as: (Total Mass * 2.5) / 4',
+                    infoFlightTimeCalculation: 'Flight time calculated based on effective battery capacity (Wh * Battery % used) and total motor power.',
+                    infoPowerCorrection: 'Motor power corrected for losses based on motor measurement voltage.',
+                    infoCRatingESCInfo: '"Battery C-Rating" and "ESC Power (A)" values are informational and do not affect flight time calculations.',
+                    calculateButton: 'Calculate Flight Time',
+                    estimatedFlightTime: 'Estimated flight time:',
+                    minutesUnit: 'minutes',
+                    requiredThrust: 'Required thrust per motor at hover:',
+                    requiredPower: 'Required power per motor at hover (corrected):',
+                    voltageCorrectionFactorText: 'Voltage correction factor:',
+                    targetVoltageText: 'Target operating voltage:',
+                    maxBatteryAmpsText: 'Max. continuous battery current:',
+                    maxEscAmpsText: 'Max. ESC load (total):',
+                    maxMotorAmpsText: 'Max. motor load (total):',
+                    thrustToWeightRatioText: 'Thrust to Weight Ratio (TWR):',
+                    errorMessagePrefix: 'An error occurred:',
+                    unexpectedError: 'An unexpected error occurred during calculations. Please try again.',
+                    warningsTitle: 'Warnings:',
+                    suggestionsTitle: 'Suggestions:',
+                    advancedInfoButton: 'Advanced',
+                    advancedInfoTitle: 'Advanced Information',
+                    advancedInfoContentPlaceholder: 'This is where your advanced information will be displayed. I am waiting for your data to put here.',
+                    errorBatteryEfficiency: 'Please enter a valid value for "How much % of battery will you use during flight" (%). Must be between 1 and 100.',
+                    errorThermalLoss: 'Please enter a valid value for "Constant thermal losses in the system" (%). Must be between 0 and 99.9.',
+                    errorMassInput: 'Please enter valid, non-negative values for drone mass, battery mass, and additional payload mass (in grams).',
+                    errorMeasurementVoltage: 'Please enter a valid, positive value for motor measurement voltage.',
+                    errorMotorSpecValues: 'Please enter valid, positive values for all motor specification fields.',
+                    errorThrustIncrease: 'Thrust values must increase with throttle percentage (30% < 50% < 70% < 100%) for your motor data.',
+                    errorPowerIncrease: 'Power values must increase with throttle percentage (30% < 50% < 70% < 100%) for your motor data.',
+                    errorBatteryCapacity: 'Please enter a valid, positive value for battery capacity (Wh) or (mAh).',
+                    warningThrustExceeded: (thrustHover, maxThrust) => `Required thrust per motor at hover (${thrustHover.toFixed(2)} g) exceeds maximum motor thrust (${maxThrust.toFixed(2)} g) from your data. The drone will likely not be able to lift off or will have a very short flight time.`,
+                    errorAdjustedPower: 'Could not calculate corrected motor power. Check entered motor specification data or required thrust/voltage range.',
+                    errorThermalLossTooHigh: 'Thermal loss percentage must be less than 100%.',
+                    errorZeroPowerConsumption: 'Total power consumption at hover cannot be zero. Check motor power or input data.',
+                    warningEscTooLow: (totalMotorAmps, totalEscAmps) => `Motors may draw more current (${totalMotorAmps.toFixed(2)} A) than your ESCs (${totalEscAmps.toFixed(2)} A) can provide. This may lead to ESC damage. Consider using higher power ESCs (higher amperage).`,
+                    warningBatteryTooLow: (maxBatteryAmps, requiredAmps) => `Maximum continuous battery current (${maxBatteryAmps.toFixed(2)} A) may be insufficient for motors at full load (approx. ${requiredAmps.toFixed(2)} A required). This may lead to voltage drops and battery damage. Select a battery at least 20% more powerful than the maximum current draw of the motors.`,
+                    warningLowEfficiency: (throttlePercent, efficiency, threshold) => `Motor efficiency at ${throttlePercent}% throttle is ${efficiency.toFixed(2)} g/W, which is below the recommended threshold of ${threshold} g/W. This may indicate low quality or mismatched motors/propellers for your configuration, which will shorten flight time.`,
+                    suggestionUnderpoweredMotors: (totalMotorAmps, componentMaxAmps, targetMotorAmps, targetMotorAmpsPerMotor) => `Motors (${totalMotorAmps.toFixed(2)} A) draw over 35% less current than the maximum effective capacity of your components (ESC and battery, limit: ${componentMaxAmps.toFixed(2)} A). To increase performance and flight dynamics, consider using more powerful motors with a total current draw closer to ${targetMotorAmps.toFixed(2)} A (which means approximately ${targetMotorAmpsPerMotor.toFixed(2)} A per motor). Remember not to exceed ESC limits.`,
+                    suggestionIncreaseEsc: (suggestedEscAmps) => `To eliminate the ESC warning, consider using ESCs with a power of at least ${suggestedEscAmps} A (total power for all ESCs).`,
+                    suggestionIncreaseBattery: (suggestedAmps, suggestedMilliAh, suggestedCRating) => {
+                        let text = `To eliminate the battery warning, you need a battery capable of delivering at least ${suggestedAmps} A.`;
+                        if (suggestedMilliAh !== "N/A") { text += ` You can increase capacity to approximately ${suggestedMilliAh} mAh (with current C-rating).`; }
+                        if (suggestedCRating !== "N/A") { text += ` Or increase the C-rating to approximately ${suggestedCRating}C (with current capacity).`; }
+                        return text;
+                    },
+                    suggestionImproveEfficiency: 'To improve motor efficiency, consider using different motor models or selecting more appropriate propellers. Low motor efficiency directly affects shorter flight time.',
+                    noSuggestions: 'No specific suggestions for optimization based on the entered data.',
+                    noWarnings: 'No urgent warnings regarding safety and performance based on the entered data.',
+                    thrustToWeightTableTitle: 'Thrust to Weight Ratio Interpretation',
+                    twrRangeColumn: 'TWR Range',
+                    droneTypeColumn: 'Drone Type',
+                    cinematicType: 'Cinematic',
+                    freestyleType: 'Freestyle',
+                    racingType: 'Racing',
+                    unknownType: 'Unknown'
+                },
+                es: {
+                    appTitle: 'Calculadora de Tiempo de Vuelo de Dron',
+                    calculatorTitle: 'Calculadora de Tiempo de Vuelo de Dron',
+                    batteryCapacityWhLabel: 'Capacidad de la batería (Wh):',
+                    batteryCapacityMilliAhLabel: 'Capacidad de la batería (mAh):',
+                    batteryCRatingLabel: 'Clasificación C de la batería:',
+                    batteryMassGLabel: 'Masa de la batería (g):',
+                    droneMassGLabel: 'Masa del dron (sin batería ni carga) (g):',
+                    additionalPayloadMassGLabel: 'Masa de carga adicional (ej. cámara) (g):',
+                    escPowerAmpsLabel: 'Potencia ESC (A):',
+                    energyLossParamsTitle: 'Parámetros de Pérdida de Energía',
+                    batteryEfficiencyPercentLabel: 'Porcentaje de batería que usarás durante el vuelo:',
+                    thermalLossPercentLabel: 'Pérdidas térmicas constantes en el sistema (%):',
+                    motorSpecTitle: 'Especificación del Motor (Empuje vs. Potencia)',
+                    measurementVoltageLabel: 'Voltaje de medición del motor (V): (Si es posible, proporcione datos para 22V o lo más cercano posible)',
+                    thrust30GLabel: 'Empuje (g) @ 30% de acelerador:',
+                    power30WLabel: 'Potencia (W) @ 30% de acelerador:',
+                    thrust50GLabel: 'Empuje (g) @ 50% de acelerador:',
+                    power50WLabel: 'Potencia (W) @ 50% de acelerador:',
+                    thrust70GLabel: 'Empuje (g) @ 70% de acelerador:',
+                    power70WLabel: 'Potencia (W) @ 70% de acelerador:',
+                    thrust100GLabel: 'Empuje (g) @ 100% de acelerador:',
+                    power100WLabel: 'Potencia (W) @ 100% de acelerador:',
+                    infoMotors: 'Número de motores (quadcopter): 4',
+                    infoThrustCalculation: 'Empuje por motor en vuelo estacionario calculado como: (Masa Total * 2.5) / 4',
+                    infoFlightTimeCalculation: 'Tiempo de vuelo calculado en base a la capacidad efectiva de la batería (Wh * % de batería utilizada) y la potencia total de los motores.',
+                    infoPowerCorrection: 'Potencia del motor corregida por pérdidas en base al voltaje de medición del motor.',
+                    infoCRatingESCInfo: 'Los valores de "Clasificación C de la batería" y "Potencia ESC (A)" son informativos y no afectan los cálculos del tiempo de vuelo.',
+                    calculateButton: 'Calcular Tiempo de Vuelo',
+                    estimatedFlightTime: 'Tiempo de vuelo estimado:',
+                    minutesUnit: 'minutos',
+                    requiredThrust: 'Empuje requerido por motor en vuelo estacionario:',
+                    requiredPower: 'Potencia requerida por motor en vuelo estacionario (corregida):',
+                    voltageCorrectionFactorText: 'Factor de corrección de voltaje:',
+                    targetVoltageText: 'Voltaje de operación objetivo:',
+                    maxBatteryAmpsText: 'Corriente máxima continua de la batería:',
+                    maxEscAmpsText: 'Carga máxima ESC (total):',
+                    maxMotorAmpsText: 'Carga máxima del motor (total):',
+                    thrustToWeightRatioText: 'Thrust to Weight Ratio (TWR):',
+                    errorMessagePrefix: 'Ocurrió un error:',
+                    unexpectedError: 'Ocurrió un error inesperado durante los cálculos. Inténtalo de nuevo.',
+                    warningsTitle: 'Advertencias:',
+                    suggestionsTitle: 'Sugerencias:',
+                    advancedInfoButton: 'Avanzado',
+                    advancedInfoTitle: 'Información avanzada',
+                    advancedInfoContentPlaceholder: 'Aquí se mostrará tu información avanzada. Estoy esperando tus datos para ponerlos aquí.',
+                    errorBatteryEfficiency: 'Por favor, introduce un valor válido para "Porcentaje de batería que usarás durante el vuelo" (%). Debe estar entre 1 y 100.',
+                    errorThermalLoss: 'Por favor, introduce un valor válido para "Pérdidas térmicas constantes en el sistema" (%). Debe estar entre 0 y 99.9.',
+                    errorMassInput: 'Por favor, introduce valores válidos y no negativos para la masa del dron, la batería y la carga adicional (en gramos).',
+                    errorMeasurementVoltage: 'Por favor, introduce un valor válido y positivo para el voltaje de medición del motor.',
+                    errorMotorSpecValues: 'Por favor, introduce valores válidos y positivos para todos los campos de especificación del motor.',
+                    errorThrustIncrease: 'Los valores de empuje (Thrust) deben aumentar con el porcentaje de acelerador (30% < 50% < 70% < 100%) para los datos de tu motor.',
+                    errorPowerIncrease: 'Los valores de potencia (Power) deben aumentar con el porcentaje de acelerador (30% < 50% < 70% < 100%) para los datos de tu motor.',
+                    errorBatteryCapacity: 'Por favor, introduce un valor válido y positivo para la capacidad de la batería (Wh) o (mAh).',
+                    warningThrustExceeded: (thrustHover, maxThrust) => `El empuje requerido por motor en vuelo estacionario (${thrustHover.toFixed(2)} g) supera el empuje máximo del motor (${maxThrust.toFixed(2)} g) de tus datos. Es probable que el dron no pueda despegar o tenga un tiempo de vuelo muy corto.`,
+                    errorAdjustedPower: 'No se pudo calcular la potencia corregida del motor. Comprueba los datos de especificación del motor introducidos o el rango de empuje/voltaje requerido.',
+                    errorThermalLossTooHigh: 'El porcentaje de pérdida térmica debe ser inferior al 100%.',
+                    errorZeroPowerConsumption: 'El consumo total de energía en vuelo estacionario no puede ser cero. Comprueba la potencia del motor o los datos de entrada.',
+                    warningEscTooLow: (totalMotorAmps, totalEscAmps) => `Los motores pueden consumir más corriente (${totalMotorAmps.toFixed(2)} A) de lo que tus ESC (${totalEscAmps.toFixed(2)} A) pueden proporcionar. Esto puede provocar daños en el ESC. Considera usar ESCs de mayor potencia (mayor amperaje).`,
+                    warningBatteryTooLow: (maxBatteryAmps, requiredAmps) => `La corriente máxima continua de la batería (${maxBatteryAmps.toFixed(2)} A) puede ser insuficiente para los motores a plena carga (se requieren aproximadamente ${requiredAmps.toFixed(2)} A). Esto puede provocar caídas de voltaje y daños en la batería. Selecciona una batería al menos un 20% más potente que el consumo máximo de corriente de los motores.`,
+                    warningLowEfficiency: (throttlePercent, efficiency, threshold) => `La eficiencia del motor al ${throttlePercent}% del acelerador es de ${efficiency.toFixed(2)} g/W, lo que está por debajo del umbral recomendado de ${threshold} g/W. Esto puede indicar baja calidad o motores/hélices incompatibles para tu configuración, lo que acortará el tiempo de vuelo.`,
+                    suggestionUnderpoweredMotors: (totalMotorAmps, componentMaxAmps, targetMotorAmps, targetMotorAmpsPerMotor) => `Los motores (${totalMotorAmps.toFixed(2)} A) consumen más de un 35% menos de corriente que la capacidad máxima efectiva de tus componentes (ESC y batería, límite: ${componentMaxAmps.toFixed(2)} A). Para aumentar el rendimiento y la dinámica de vuelo, considera usar motores más potentes con un consumo total de corriente más cercano a ${targetMotorAmps.toFixed(2)} A (lo que significa aproximadamente ${targetMotorAmpsPerMotor.toFixed(2)} A por motor). Recuerda no exceder los límites del ESC.`,
+                    suggestionIncreaseEsc: (suggestedEscAmps) => `Para eliminar la advertencia de ESC, considera usar ESCs con una potencia de al menos ${suggestedEscAmps} A (potencia total para todos los ESCs).`,
+                    suggestionIncreaseBattery: (suggestedAmps, suggestedMilliAh, suggestedCRating) => {
+                        let text = `Para eliminar la advertencia de batería, necesitas una batería capaz de suministrar al menos ${suggestedAmps} A.`;
+                        if (suggestedMilliAh !== "N/A") { text += ` Puedes aumentar la capacidad a aproximadamente ${suggestedMilliAh} mAh (con la clasificación C actual).`; }
+                        if (suggestedCRating !== "N/A") { text += ` O aumentar la clasificación C a aproximadamente ${suggestedCRating}C (con la capacidad actual).`; }
+                        return text;
+                    },
+                    suggestionImproveEfficiency: 'Para mejorar la eficiencia del motor, considera usar diferentes modelos de motor o seleccionar hélices más adecuadas. La baja eficiencia del motor afecta directamente a un menor tiempo de vuelo.',
+                    noSuggestions: 'No hay sugerencias específicas para la optimización basadas en los datos introducidos.',
+                    noWarnings: 'No hay advertencias urgentes sobre seguridad y rendimiento basadas en los datos introducidos.',
+                    thrustToWeightTableTitle: 'Thrust to Weight Ratio Interpretation',
+                    twrRangeColumn: 'TWR Range',
+                    droneTypeColumn: 'Drone Type',
+                    cinematicType: 'Cinematic',
+                    freestyleType: 'Freestyle',
+                    racingType: 'Racing',
+                    unknownType: 'Unknown'
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'pl'; // Default to Polish
+
+            // Elementy wejściowe (do dynamicznej aktualizacji placeholderów)
+            const batteryCapacityWhInput = document.getElementById('batteryCapacityWh');
+            const batteryCapacityMilliAhInput = document.getElementById('batteryCapacityMilliAh');
+            const batteryCRatingInput = document.getElementById('batteryCRating');
+            const batteryMassGInput = document.getElementById('batteryMassG');
+            const droneMassGInput = document.getElementById('droneMassG');
+            const additionalPayloadMassGInput = document.getElementById('additionalPayloadMassG');
+            const batteryEfficiencyPercentInput = document.getElementById('batteryEfficiencyPercent');
+            const measurementVoltageInput = document.getElementById('measurementVoltage');
+            const escPowerAmpsInput = document.getElementById('escPowerAmps');
+            const thermalLossPercentInput = document.getElementById('thermalLossPercentInput');
+            const thrust30GInput = document.getElementById('thrust30G');
+            const power30WInput = document.getElementById('power30W');
+            const thrust50GInput = document.getElementById('thrust50G');
+            const power50WInput = document.getElementById('power50W');
+            const thrust70GInput = document.getElementById('thrust70G');
+            const power70WInput = document.getElementById('power70W');
+            const thrust100GInput = document.getElementById('thrust100G');
+            const power100WInput = document.getElementById('power100W');
+
+            // Funkcja do aktualizacji tekstu na podstawie języka
+            function updateTexts() {
+                const lang = languages[currentLanguage];
+
+                document.getElementById('appTitle').textContent = lang.appTitle;
+                document.getElementById('calculatorTitle').textContent = lang.calculatorTitle;
+                document.getElementById('batteryCapacityWhLabel').textContent = lang.batteryCapacityWhLabel;
+                document.getElementById('batteryCapacityMilliAhLabel').textContent = lang.batteryCapacityMilliAhLabel;
+                document.getElementById('batteryCRatingLabel').textContent = lang.batteryCRatingLabel;
+                document.getElementById('batteryMassGLabel').textContent = lang.batteryMassGLabel;
+                document.getElementById('droneMassGLabel').textContent = lang.droneMassGLabel;
+                document.getElementById('additionalPayloadMassGLabel').textContent = lang.additionalPayloadMassGLabel;
+                document.getElementById('escPowerAmpsLabel').textContent = lang.escPowerAmpsLabel;
+                document.getElementById('energyLossParamsTitle').textContent = lang.energyLossParamsTitle;
+                document.getElementById('batteryEfficiencyPercentLabel').textContent = lang.batteryEfficiencyPercentLabel;
+                document.getElementById('thermalLossPercentLabel').textContent = lang.thermalLossPercentLabel;
+                document.getElementById('motorSpecTitle').textContent = lang.motorSpecTitle;
+                document.getElementById('measurementVoltageLabel').textContent = lang.measurementVoltageLabel;
+                document.getElementById('thrust30GLabel').textContent = lang.thrust30GLabel;
+                document.getElementById('power30WLabel').textContent = lang.power30WLabel;
+                document.getElementById('thrust50GLabel').textContent = lang.thrust50GLabel;
+                document.getElementById('power50WLabel').textContent = lang.power50WLabel;
+                document.getElementById('thrust70GLabel').textContent = lang.thrust70GLabel;
+                document.getElementById('power70WLabel').textContent = lang.power70WLabel;
+                document.getElementById('thrust100GLabel').textContent = lang.thrust100GLabel;
+                document.getElementById('power100WLabel').textContent = lang.power100WLabel;
+                document.getElementById('infoMotors').textContent = lang.infoMotors;
+                document.getElementById('infoThrustCalculation').textContent = lang.infoThrustCalculation;
+                document.getElementById('infoFlightTimeCalculation').textContent = lang.infoFlightTimeCalculation;
+                document.getElementById('infoPowerCorrection').textContent = lang.infoPowerCorrection;
+                document.getElementById('infoCRatingESCInfo').textContent = lang.infoCRatingESCInfo;
+                document.getElementById('calculateBtn').textContent = lang.calculateButton;
+                document.getElementById('estimatedFlightTime').textContent = lang.estimatedFlightTime;
+                document.getElementById('minutesUnit').textContent = lang.minutesUnit;
+                document.getElementById('requiredThrust').textContent = lang.requiredThrust;
+                document.getElementById('requiredPower').textContent = lang.requiredPower;
+                document.getElementById('voltageCorrectionFactorText').textContent = lang.voltageCorrectionFactorText;
+                document.getElementById('targetVoltageText').textContent = lang.targetVoltageText;
+                document.getElementById('maxBatteryAmpsText').textContent = lang.maxBatteryAmpsText;
+                document.getElementById('maxEscAmpsText').textContent = lang.maxEscAmpsText;
+                document.getElementById('maxMotorAmpsText').textContent = lang.maxMotorAmpsText;
+                document.getElementById('thrustToWeightRatioText').textContent = lang.thrustToWeightRatioText;
+                document.getElementById('errorMessagePrefix').textContent = lang.errorMessagePrefix;
+                document.getElementById('warningsTitle').textContent = lang.warningsTitle;
+                document.getElementById('suggestionsTitle').textContent = lang.suggestionsTitle;
+                document.getElementById('showAdvancedInfoBtn').textContent = lang.advancedInfoButton;
+                document.getElementById('advancedInfoTitle').textContent = lang.advancedInfoTitle;
+                document.getElementById('advancedInfoContent').textContent = lang.advancedInfoContentPlaceholder;
+
+
+                // Update placeholders as well
+                batteryCapacityWhInput.placeholder = currentLanguage === 'pl' ? 'Np. 72' : (currentLanguage === 'en' ? 'e.g. 72' : 'ej. 72');
+                batteryCapacityMilliAhInput.placeholder = currentLanguage === 'pl' ? 'Np. 5000' : (currentLanguage === 'en' ? 'e.g. 5000' : 'ej. 5000');
+                batteryCRatingInput.placeholder = currentLanguage === 'pl' ? 'Np. 30' : (currentLanguage === 'en' ? 'e.g. 30' : 'ej. 30');
+                batteryMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 700' : (currentLanguage === 'en' ? 'e.g. 700' : 'ej. 700');
+                droneMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 1500' : (currentLanguage === 'en' ? 'e.g. 1500' : 'ej. 1500');
+                additionalPayloadMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 500' : (currentLanguage === 'en' ? 'e.g. 500' : 'ej. 500');
+                escPowerAmpsInput.placeholder = currentLanguage === 'pl' ? 'Np. 40' : (currentLanguage === 'en' ? 'e.g. 40' : 'ej. 40');
+                batteryEfficiencyPercentInput.placeholder = currentLanguage === 'pl' ? 'Np. 80' : (currentLanguage === 'en' ? 'e.g. 80' : 'ej. 80');
+                thermalLossPercentInput.placeholder = currentLanguage === 'pl' ? 'Np. 22' : (currentLanguage === 'en' ? 'e.g. 22' : 'ej. 22');
+                measurementVoltageInput.placeholder = currentLanguage === 'pl' ? 'Np. 24' : (currentLanguage === 'en' ? 'e.g. 24' : 'ej. 24');
+                thrust30GInput.placeholder = currentLanguage === 'pl' ? 'Np. 500' : (currentLanguage === 'en' ? 'e.g. 500' : 'ej. 500');
+                power30WInput.placeholder = currentLanguage === 'pl' ? 'Np. 50' : (currentLanguage === 'en' ? 'e.g. 50' : 'ej. 50');
+                thrust50GInput.placeholder = currentLanguage === 'pl' ? 'Np. 1000' : (currentLanguage === 'en' ? 'e.g. 1000' : 'ej. 1000');
+                power50WInput.placeholder = currentLanguage === 'pl' ? 'Np. 120' : (currentLanguage === 'en' ? 'e.g. 120' : 'ej. 120');
+                thrust70GInput.placeholder = currentLanguage === 'pl' ? 'Np. 1500' : (currentLanguage === 'en' ? 'e.g. 1500' : 'ej. 1500');
+                power70WInput.placeholder = currentLanguage === 'pl' ? 'Np. 200' : (currentLanguage === 'en' ? 'e.g. 200' : 'ej. 200');
+                thrust100GInput.placeholder = currentLanguage === 'pl' ? 'Np. 2500' : (currentLanguage === 'en' ? 'e.g. 2500' : 'ej. 2500');
+                power100WInput.placeholder = currentLanguage === 'pl' ? 'Np. 400' : (currentLanguage === 'en' ? 'e.g. 400' : 'ej. 400');
+            }
+
+            // Funkcja do stosowania motywu (niezmieniona)
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            // Sprawdź zapisany motyw przy ładowaniu strony
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            // Obsługa przełączania motywu
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+
+            // Obsługa przełączania języka
+            languageToggle.addEventListener('click', () => {
+                const languagesOrder = ['pl', 'en', 'es'];
+                let currentIndex = languagesOrder.indexOf(currentLanguage);
+                let nextIndex = (currentIndex + 1) % languagesOrder.length;
+                currentLanguage = languagesOrder[nextIndex];
+                localStorage.setItem('language', currentLanguage);
+                languageToggle.textContent = languagesOrder.map(l => l.toUpperCase()).join('/'); // Update button text to PL/EN/ES
+                updateTexts(); // Update all static texts
+                calculateFlightTime(); // Recalculate to update dynamic messages
+            });
+
+            // Obsługa przycisku zaawansowanych informacji
+            showAdvancedInfoBtn.addEventListener('click', () => {
+                advancedInfoPanel.classList.remove('hidden');
+            });
+            closeAdvancedInfoBtn.addEventListener('click', () => {
+                advancedInfoPanel.classList.add('hidden');
+            });
+
+
+            // Lista wszystkich pól wejściowych, które mają być zapamiętywane
+            const inputElements = [
+                batteryCapacityWhInput,
+                batteryCapacityMilliAhInput,
+                batteryCRatingInput,
+                batteryMassGInput,
+                droneMassGInput,
+                additionalPayloadMassGInput,
+                batteryEfficiencyPercentInput,
+                measurementVoltageInput,
+                escPowerAmpsInput,
+                thermalLossPercentInput,
+                thrust30GInput,
+                power30WInput,
+                thrust50GInput,
+                power50WInput,
+                thrust70GInput,
+                power70WInput,
+                thrust100GInput,
+                power100WInput
+            ];
+
+            // Funkcja do ładowania danych z localStorage
+            function loadInputs() {
+                inputElements.forEach(input => {
+                    const savedValue = localStorage.getItem(input.id);
+                    if (savedValue !== null) {
+                        input.value = savedValue;
+                    }
+                });
+            }
+
+            // Funkcja do zapisywania danych do localStorage
+            function saveInput(event) {
+                localStorage.setItem(event.target.id, event.target.value);
+            }
+
+            // Dodaj event listener do każdego pola wejściowego
+            inputElements.forEach(input => {
+                input.addEventListener('input', saveInput);
+            });
+
+            // Załaduj dane przy starcie aplikacji i zaktualizuj teksty
+            loadInputs();
+            updateTexts(); // Initial text update based on saved language
+            languageToggle.textContent = ['pl', 'en', 'es'].map(l => l.toUpperCase()).join('/'); // Set initial button text
+
+            calculateBtn.addEventListener('click', calculateFlightTime);
+
+            /**
+             * Funkcja wyświetlająca komunikat o błędzie.
+             * @param {string} messageKey - Klucz wiadomości błędu z obiektu językowego.
+             */
+            function displayError(messageKey) {
+                errorMessageDiv.classList.remove('hidden');
+                resultDiv.classList.add('hidden');
+                suggestionsBox.classList.add('hidden');
+                warningsBox.classList.add('hidden');
+                suggestionList.innerHTML = '';
+                warningList.innerHTML = '';
+                errorTextSpan.textContent = languages[currentLanguage][messageKey];
+            }
+
+            /**
+             * Funkcja interpolująca (lub ekstrapolująca) moc na podstawie ciągu.
+             * Przyjmuje docelowy ciąg i posortowane punkty danych (ciąg, moc).
+             * @param {number} targetThrust - Docelowy ciąg (w gramach), dla którego szukamy mocy.
+             * @param {Array<Object>} dataPoints - Tablica obiektów { thrust: number, power: number }, posortowana wg ciągu.
+             * @returns {number} Obliczona moc (w Watach).
+             */
+            function interpolatePower(targetThrust, dataPoints) {
+                // Ensure dataPoints are sorted by thrust
+                dataPoints.sort((a, b) => a.thrust - b.thrust);
+
+                let P_hover;
+
+                // If targetThrust is outside the range, extrapolate
+                if (targetThrust <= dataPoints[0].thrust) {
+                    const x1 = dataPoints[0].thrust;
+                    const y1 = dataPoints[0].power;
+                    const x2 = dataPoints[1].thrust;
+                    const y2 = dataPoints[1].power;
+                    P_hover = y1 + (targetThrust - x1) * (y2 - y1) / (x2 - x1);
+                }
+                // If targetThrust is above the highest point, extrapolate using last two points
+                else if (targetThrust >= dataPoints[dataPoints.length - 1].thrust) {
+                    const x1 = dataPoints[dataPoints.length - 2].thrust;
+                    const y1 = dataPoints[dataPoints.length - 2].power;
+                    const x2 = dataPoints[dataPoints.length - 1].thrust;
+                    const y2 = dataPoints[dataPoints.length - 1].power;
+                    P_hover = y1 + (targetThrust - x1) * (y2 - y1) / (x2 - x1);
+                }
+                // Interpolate within the range
+                else {
+                    for (let i = 0; i < dataPoints.length - 1; i++) {
+                        const p1 = dataPoints[i];
+                        const p2 = dataPoints[i + 1];
+
+                        if (targetThrust >= p1.thrust && targetThrust <= p2.thrust) {
+                            const x1 = p1.thrust;
+                            const y1 = p1.power;
+                            const x2 = p2.thrust;
+                            const y2 = p2.power;
+                            P_hover = y1 + (targetThrust - x1) * (y2 - y1) / (x2 - x1);
+                            break;
+                        }
+                    }
+                }
+                return Math.max(0, P_hover); // Ensure power is not negative
+            }
+
+            /**
+             * Korekta mocy na podstawie różnicy napięć (model fizyczny)
+             * @param {number} power - Moc wyjściowa
+             * @param {number} sourceVoltage - Napięcie źródłowe
+             * @param {number} targetVoltage - Docelowe napięcie
+             * @param {number} thrust - Wymagany ciąg (dla skalowania)
+             * @returns {number} Skorygowana moc
+             */
+            function correctPowerForVoltage(power, sourceVoltage, targetVoltage, thrust) {
+                // Wykładnik 1.5 to kompromis między teorią (3.0) a praktyką (1.0)
+                const baseCorrection = Math.pow(targetVoltage / sourceVoltage, 1.5);
+
+                // Dodatkowa korekta dla wysokich ciągów (>1000g)
+                // Ten współczynnik (0.95) jest heurystyczny i może wymagać dostosowania
+                const thrustCorrection = thrust > 1000 ? 0.95 : 1.0;
+
+                return power * baseCorrection * thrustCorrection;
+            }
+
+            function calculateFlightTime() {
+                // Ukryj poprzednie wyniki i błędy
+                resultDiv.classList.add('hidden');
+                errorMessageDiv.classList.add('hidden');
+                suggestionsBox.classList.add('hidden'); // Hide suggestions initially
+                warningsBox.classList.add('hidden'); // Hide warnings initially
+                suggestionList.innerHTML = ''; // Clear previous suggestions
+                warningList.innerHTML = ''; // Clear previous warnings
+                errorTextSpan.textContent = '';
+                thrustToWeightTableContainer.innerHTML = ''; // Clear the table content
+
+                try {
+                    // Pobierz wartości z pól wejściowych
+                    const rawBatteryCapacityWh = parseFloat(batteryCapacityWhInput.value);
+                    const rawBatteryCapacityMilliAh = parseFloat(batteryCapacityMilliAhInput.value);
+                    const batteryCRating = parseFloat(batteryCRatingInput.value); // Get C-rating
+                    const batteryEfficiencyPercent = parseFloat(batteryEfficiencyPercentInput.value);
+                    const droneMassG = parseFloat(droneMassGInput.value);
+                    const batteryMassG = parseFloat(batteryMassGInput.value);
+                    const additionalPayloadMassG = parseFloat(additionalPayloadMassGInput.value);
+                    const measurementVoltage = parseFloat(measurementVoltageInput.value);
+                    const thermalLossPercent = parseFloat(thermalLossPercentInput.value);
+                    const escPowerAmps = parseFloat(escPowerAmpsInput.value);
+
+                    // Pobierz wartości specyfikacji silnika
+                    const thrust30G = parseFloat(thrust30GInput.value);
+                    const power30W = parseFloat(power30WInput.value);
+                    const thrust50G = parseFloat(thrust50GInput.value);
+                    const power50W = parseFloat(power50WInput.value);
+                    const thrust70G = parseFloat(thrust70GInput.value);
+                    const power70W = parseFloat(power70WInput.value);
+                    const thrust100G = parseFloat(thrust100GInput.value);
+                    const power100W = parseFloat(power100WInput.value);
+
+                    // Walidacja danych wejściowych
+                    if (isNaN(batteryEfficiencyPercent) || batteryEfficiencyPercent <= 0 || batteryEfficiencyPercent > 100) {
+                        displayError('errorBatteryEfficiency');
+                        return;
+                    }
+                    if (isNaN(thermalLossPercent) || thermalLossPercent < 0 || thermalLossPercent >= 100) {
+                        displayError('errorThermalLoss');
+                        return;
+                    }
+                    if (isNaN(droneMassG) || droneMassG < 0 || isNaN(batteryMassG) || batteryMassG < 0 || isNaN(additionalPayloadMassG) || additionalPayloadMassG < 0) {
+                        displayError('errorMassInput');
+                        return;
+                    }
+                    if (isNaN(measurementVoltage) || measurementVoltage <= 0) {
+                        displayError('errorMeasurementVoltage');
+                        return;
+                    }
+
+                    // Walidacja user motor data
+                    const userMotorData = [
+                        { thrust: thrust30G, power: power30W },
+                        { thrust: thrust50G, power: power50W },
+                        { thrust: thrust70G, power: power70W },
+                        { thrust: thrust100G, power: power100W }
+                    ];
+
+                    for (const dataPoint of userMotorData) {
+                        if (isNaN(dataPoint.thrust) || dataPoint.thrust <= 0 || isNaN(dataPoint.power) || dataPoint.power <= 0) {
+                            displayError('errorMotorSpecValues');
+                            return;
+                        }
+                    }
+
+                    // Walidacja, czy wartości ciągu i mocy rosną dla danych użytkownika
+                    if (userMotorData[0].thrust >= userMotorData[1].thrust || userMotorData[1].thrust >= userMotorData[2].thrust || userMotorData[2].thrust >= userMotorData[3].thrust) {
+                        displayError('errorThrustIncrease');
+                        return;
+                    }
+                    if (userMotorData[0].power >= userMotorData[1].power || userMotorData[1].power >= userMotorData[2].power || userMotorData[2].power >= userMotorData[3].power) {
+                        displayError('errorPowerIncrease');
+                        return;
+                    }
+
+                    // Logika dla pojemności baterii (Wh)
+                    let batteryCapacityWh;
+                    if (!isNaN(rawBatteryCapacityWh) && rawBatteryCapacityWh > 0) {
+                        batteryCapacityWh = rawBatteryCapacityWh;
+                    } else if (!isNaN(rawBatteryCapacityMilliAh) && rawBatteryCapacityMilliAh > 0) {
+                        batteryCapacityWh = (rawBatteryCapacityMilliAh / 1000) * WORKING_VOLTAGE;
+                    } else {
+                        displayError('errorBatteryCapacity');
+                        return;
+                    }
+
+                    // Obliczenia całkowitej masy drona (konwersja gramów na kilogramy dla obliczeń fizycznych)
+                    const totalMassG = droneMassG + batteryMassG + additionalPayloadMassG;
+                    const totalMassKg = totalMassG / 1000;
+
+                    // Obliczanie całkowitego ciągu potrzebnego do zawisu (N)
+                    const totalThrustNeededForHoverN = totalMassKg * GRAVITY * 2.5; // Factor 2.5 for typical FPV flight
+                    const thrustPerMotorNeededForHoverN = totalThrustNeededForHoverN / NUM_MOTORS;
+                    const thrustPerMotorNeededForHoverG = thrustPerMotorNeededForHoverN * NEWTONS_TO_GRAMS;
+
+                    // Sprawdzenie, czy wymagany ciąg w zawisie przekracza maksymalny ciąg silnika użytkownika
+                    let currentWarnings = []; // Initialize here to use in subsequent checks
+                    if (thrustPerMotorNeededForHoverG > userMotorData[userMotorData.length - 1].thrust) {
+                        currentWarnings.push(languages[currentLanguage].warningThrustExceeded(thrustPerMotorNeededForHoverG, userMotorData[userMotorData.length - 1].thrust));
+                    }
+
+                    // Oblicz moc na silnik potrzebną do zawisu na podstawie DANYCH UŻYTKOWNIKA i NAPIĘCIA POMIAROWEGO
+                    let powerPerMotorAtHoverW = interpolatePower(thrustPerMotorNeededForHoverG, userMotorData);
+
+                    // NOWA KOREKCJA MOCY - model fizyczny (przywrócony)
+                    let voltageCorrectionFactorValue = 1;
+                    let adjustedPowerPerMotorAtHoverW = powerPerMotorAtHoverW;
+
+                    if (measurementVoltage !== WORKING_VOLTAGE) {
+                        voltageCorrectionFactorValue = Math.pow(WORKING_VOLTAGE / measurementVoltage, 1.5);
+                        adjustedPowerPerMotorAtHoverW = correctPowerForVoltage(
+                            powerPerMotorAtHoverW,
+                            measurementVoltage,
+                            WORKING_VOLTAGE,
+                            thrustPerMotorNeededForHoverG
+                        );
+                    }
+
+                    // Sprawdź, czy obliczona moc jest prawidłowa
+                    if (isNaN(adjustedPowerPerMotorAtHoverW) || adjustedPowerPerMotorAtHoverW <= 0) {
+                        displayError('errorAdjustedPower');
+                        return;
+                    }
+
+                    // Całkowite zużycie energii w zawisie (skorygowane o napięcie i straty cieplne)
+                    let totalPowerConsumptionAtHoverW = adjustedPowerPerMotorAtHoverW * NUM_MOTORS;
+
+                    // Zastosowanie stałych strat cieplnych
+                    if (thermalLossPercent >= 100) {
+                        displayError('errorThermalLossTooHigh');
+                        return;
+                    }
+                    totalPowerConsumptionAtHoverW = totalPowerConsumptionAtHoverW / (1 - thermalLossPercent / 100);
+
+                    if (totalPowerConsumptionAtHoverW === 0) {
+                        displayError('errorZeroPowerConsumption');
+                        return;
+                    }
+
+                    // Oblicz efektywną energię baterii
+                    const batteryEnergyWhEffective = batteryCapacityWh * (batteryEfficiencyPercent / 100);
+
+                    // Czas lotu w godzinach
+                    const flightTimeHours = batteryEnergyWhEffective / totalPowerConsumptionAtHoverW;
+                    // Czas lotu w minutach
+                    const flightTimeMinutes = flightTimeHours * 60;
+
+                    // Obliczenia dla sugestii i podsumowania
+                    const maxBatteryAmps = (rawBatteryCapacityMilliAh / 1000) * batteryCRating;
+                    const totalEscAmps = escPowerAmps * NUM_MOTORS;
+                    const maxPowerPerMotorAt100W = parseFloat(power100WInput.value);
+                    const totalMaxMotorPowerW = maxPowerPerMotorAt100W * NUM_MOTORS;
+                    const totalMaxMotorAmps = totalMaxMotorPowerW / WORKING_VOLTAGE; // Max current motors can draw at 100% throttle
+
+                    // Współczynnik ciągu do masy (using max thrust for ratio)
+                    const thrustToWeightRatio = (userMotorData[userMotorData.length - 1].thrust * NUM_MOTORS) / totalMassG;
+
+                    // Wyświetl wyniki
+                    flightTimeMinutesSpan.textContent = flightTimeMinutes.toFixed(2);
+                    requiredThrustGSpan.textContent = thrustPerMotorNeededForHoverG.toFixed(2);
+                    requiredPowerWSpan.textContent = adjustedPowerPerMotorAtHoverW.toFixed(2);
+                    voltageCorrectionFactorSpan.textContent = voltageCorrectionFactorValue.toFixed(4);
+                    document.getElementById('maxBatteryAmps').textContent = maxBatteryAmps.toFixed(2);
+                    document.getElementById('maxEscAmps').textContent = totalEscAmps.toFixed(2); // Corrected this line
+                    document.getElementById('maxMotorAmps').textContent = totalMaxMotorAmps.toFixed(2);
+                    document.getElementById('thrustToWeightRatio').textContent = thrustToWeightRatio.toFixed(2);
+
+
+                    resultDiv.classList.remove('hidden');
+                    suggestionsBox.classList.remove('hidden'); // Show suggestions box
+                    warningsBox.classList.remove('hidden'); // Show warnings box
+                    suggestionList.innerHTML = ''; // Clear previous suggestions
+                    warningList.innerHTML = ''; // Clear previous warnings
+                    thrustToWeightTableContainer.innerHTML = ''; // Clear the table content
+
+                    // Generowanie tabelki interpretującej współczynnik ciągu do masy
+                    const twrCategories = [
+                        { min: 0, max: 4, type: languages[currentLanguage].cinematicType },
+                        { min: 4, max: 7, type: languages[currentLanguage].freestyleType },
+                        { min: 7, max: Infinity, type: languages[currentLanguage].racingType }
+                    ];
+
+                    let tableHtml = `
+                        <table id="thrustToWeightTable">
+                            <thead>
+                                <tr>
+                                    <th>${languages[currentLanguage].twrRangeColumn}</th>
+                                    <th>${languages[currentLanguage].droneTypeColumn}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    twrCategories.forEach(category => {
+                        const isHighlighted = (thrustToWeightRatio >= category.min && thrustToWeightRatio < category.max) || (category.max === Infinity && thrustToWeightRatio >= category.max);
+                        const rowClass = isHighlighted ? 'highlighted' : '';
+                        let rangeText = '';
+                        if (category.max === Infinity) {
+                            rangeText = `> ${category.min}`;
+                        } else {
+                            rangeText = `${category.min} - ${category.max}`;
+                        }
+                        
+                        tableHtml += `
+                            <tr class="${rowClass}">
+                                <td>${rangeText}</td>
+                                <td>${category.type}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHtml += `
+                            </tbody>
+                        </table>
+                    `;
+                    thrustToWeightTableContainer.innerHTML = tableHtml;
+
+
+                    // Generowanie sugestii i uwag
+                    let currentSuggestions = [];
+                    // currentWarnings already initialized above
+
+                    // --- Uwagi (krytyczne problemy) ---
+
+                    // 1. Silniki nie mogą mieć więcej A niż ESC.
+                    if (totalMaxMotorAmps > totalEscAmps) {
+                        currentWarnings.push(languages[currentLanguage].warningEscTooLow(totalMaxMotorAmps, totalEscAmps));
+                    }
+
+                    // 2. Bateria nie da za mało A dla silników (wymagany bufor 20%).
+                    const requiredBatteryAmpsForMotorsWithBuffer = totalMaxMotorAmps * 1.20; // 20% bufor już jest tutaj
+                    if (maxBatteryAmps < requiredBatteryAmpsForMotorsWithBuffer) {
+                        currentWarnings.push(languages[currentLanguage].warningBatteryTooLow(maxBatteryAmps, requiredBatteryAmpsForMotorsWithBuffer));
+                    }
+
+                    // 3. Sprawdzanie efektywności silników (g/W)
+                    const checkEfficiency = (thrust, power, throttlePercent) => {
+                        if (power > 0) {
+                            const efficiency = thrust / power;
+                            if (efficiency < LOW_EFFICIENCY_THRESHOLD) {
+                                currentWarnings.push(languages[currentLanguage].warningLowEfficiency(throttlePercent, efficiency, LOW_EFFICIENCY_THRESHOLD));
+                            }
+                        }
+                    };
+
+                    checkEfficiency(thrust30G, power30W, 30);
+                    checkEfficiency(thrust50G, power50W, 50);
+                    checkEfficiency(thrust70G, power70W, 70);
+
+
+                    // --- Sugestie (optymalizacja/informacje) ---
+
+                    // Obliczanie limitu prądowego komponentów (ESC i Baterii)
+                    const componentMaxAmpsConsideringBatteryBuffer = Math.min(totalEscAmps, maxBatteryAmps);
+
+                    // Sugestia: Silniki pobierają o 35% mniej A niż komponenty (ESC i Bateria) mogą dać
+                    if (totalMaxMotorAmps < componentMaxAmpsConsideringBatteryBuffer * 0.65) {
+                        const targetMotorAmps = componentMaxAmpsConsideringBatteryBuffer * 0.95;
+                        const targetMotorAmpsPerMotor = targetMotorAmps / NUM_MOTORS;
+                        currentSuggestions.push(languages[currentLanguage].suggestionUnderpoweredMotors(totalMaxMotorAmps, componentMaxAmpsConsideringBatteryBuffer, targetMotorAmps, targetMotorAmpsPerMotor));
+                    }
+
+                    // Sugestie dotyczące eliminacji ostrzeżeń (BEZ DODATKOWEGO 10%)
+                    if (totalMaxMotorAmps > totalEscAmps) {
+                        const suggestedEscAmps = totalMaxMotorAmps.toFixed(2);
+                        currentSuggestions.push(languages[currentLanguage].suggestionIncreaseEsc(suggestedEscAmps));
+                    }
+
+                    if (maxBatteryAmps < requiredBatteryAmpsForMotorsWithBuffer) {
+                        const suggestedBatteryAmps = requiredBatteryAmpsForMotorsWithBuffer.toFixed(2);
+                        const currentMilliAh = parseFloat(batteryCapacityMilliAhInput.value);
+                        const currentCRating = parseFloat(batteryCRatingInput.value);
+
+                        let suggestedMilliAh = "N/A";
+                        let suggestedCRating = "N/A";
+
+                        if (!isNaN(currentCRating) && currentCRating > 0) {
+                            suggestedMilliAh = (suggestedBatteryAmps / currentCRating * 1000).toFixed(0);
+                        }
+                        if (!isNaN(currentMilliAh) && currentMilliAh > 0) {
+                            suggestedCRating = (suggestedBatteryAmps / (currentMilliAh / 1000)).toFixed(1);
+                        }
+
+                        currentSuggestions.push(languages[currentLanguage].suggestionIncreaseBattery(suggestedBatteryAmps, suggestedMilliAh, suggestedCRating));
+                    }
+
+                    // Sugestia dotycząca niskiej efektywności
+                    if (currentWarnings.some(warning => warning.includes(languages[currentLanguage].warningLowEfficiency('', 0, LOW_EFFICIENCY_THRESHOLD).substring(0, 20)))) { // Check for part of the efficiency warning string
+                        currentSuggestions.push(languages[currentLanguage].suggestionImproveEfficiency);
+                    }
+
+
+                    // Wyświetl sugestie
+                    if (currentSuggestions.length > 0) {
+                        currentSuggestions.forEach(sugg => {
+                            const li = document.createElement('li');
+                            li.textContent = sugg;
+                            suggestionList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = languages[currentLanguage].noSuggestions;
+                        suggestionList.appendChild(li);
+                    }
+
+                    // Wyświetl uwagi (ostrzeżenia)
+                    if (currentWarnings.length > 0) {
+                        currentWarnings.forEach(warn => {
+                            const li = document.createElement('li');
+                            li.textContent = warn;
+                            warningList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = languages[currentLanguage].noWarnings;
+                        warningList.appendChild(li);
+                    }
+
+
+                } catch (error) {
+                    // Obsługa ogólnych błędów
+                    displayError('unexpectedError');
+                    console.error("Błąd obliczeń:", error);
+                }
+            }
+
+            /**
+             * Wyświetla komunikat o błędzie w dedykowanym polu.
+             * @param {string} messageKey - Klucz wiadomości błędu z obiektu językowego.
+             */
+            function displayError(messageKey) {
+                errorTextSpan.textContent = languages[currentLanguage][messageKey];
+                errorMessageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
