@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaawansowany Kalkulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            transition: background-color 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .text-gray-700 { color: #4b5563; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-400 { color: #9ca3af; }
+        .bg-white { background-color: #ffffff; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .border-gray-300 { border-color: #d1d5db; }
+       
+        body.dark-mode .text-gray-700,
+        body.dark-mode .text-gray-600,
+        body.dark-mode .text-gray-800 { color: #e2e8f0; }
+
+
+        body.dark-mode .bg-white { background-color: #2d3748; }
+        body.dark-mode .bg-gray-50 { background-color: #4a5568; }
+        body.dark-mode .border-gray-200 { border-color: #4a5568; }
+        body.dark-mode .border-gray-300 { border-color: #6b7280; }
+        body.dark-mode .disabled-element,
+        body.dark-mode input:disabled,
+        body.dark-mode select:disabled {
+            background-color: #4a5568;
+            color: #a0aec0;
+        }
+
+
+        .table-custom th, .table-custom td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table-custom th {
+            font-weight: 700;
+            background-color: #f9fafb;
+            color: #4b5563;
+        }
+        body.dark-mode .table-custom th {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+        body.dark-mode .table-custom td {
+            border-bottom-color: #4a5568;
+            color: #e2e8f0;
+        }
+       
+        input, select {
+            color: #1f2937;
+            background-color: #ffffff;
+        }
+        body.dark-mode input, body.dark-mode select {
+            color: #e2e8f0;
+            background-color: #4a5568;
+            border-color: #6b7280;
+        }
+       
+        .disabled-element {
+            cursor: not-allowed;
+            background-color: #e5e7eb;
+            color: #9ca3af;
+        }
+       
+        .results-table td {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        body.dark-mode .results-table td {
+            color: #e2e8f0;
+        }
+        .calculated-value {
+            font-weight: bold;
+            color: #10b981;
+        }
+        body.dark-mode .calculated-value {
+            color: #38a169;
+        }
+       
+        .text-red-700 { color: #b91c1c; }
+        .bg-red-100 { background-color: #fef2f2; }
+        body.dark-mode .text-red-700 { color: #fca5a5; }
+        body.dark-mode .bg-red-100 { background-color: #7f1d1d; }
+
+
+        #moonIcon { color: #1f2937; }
+        #sunIcon { color: #f59e0b; }
+        body.dark-mode #moonIcon { color: #e2e8f0; }
+        body.dark-mode #sunIcon { color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-3xl relative">
+        <!-- Header with Toggles -->
+        <div class="absolute top-4 right-4 flex items-center space-x-4">
+             <!-- Language Selector -->
+            <div>
+                <select id="languageSelector" onchange="changeLanguage()" class="block w-full pl-3 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+                    <option value="pl">Polski</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+            <!-- Dark Mode Toggle Button -->
+            <button id="darkModeToggle" onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+                <svg id="moonIcon" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                <svg id="sunIcon" class="h-6 w-6 text-yellow-500 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+        </div>
+
+
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 pt-8" data-translate="main_title">Zaawansowany Kalkulator</h1>
+        <div class="space-y-6">
+
+
+            <!-- Power type selection (DC/AC) -->
+            <div class="flex items-center justify-center space-x-6 mb-6">
+                <div class="flex items-center">
+                    <input id="power_type_dc" name="power_type" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked onchange="togglePowerType()">
+                    <label for="power_type_dc" class="ml-3 block text-sm font-medium text-gray-700" data-translate="power_type_dc_label">Prąd stały (DC)</label>
+                </div>
+                <div class="flex items-center">
+                    <input id="power_type_ac" name="power_type" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" onchange="togglePowerType()">
+                    <label for="power_type_ac" class="ml-3 block text-sm font-medium text-gray-700" data-translate="power_type_ac_label">Prąd zmienny (AC)</label>
+                </div>
+            </div>
+
+
+            <!-- AC Specific Parameters -->
+            <div id="ac_params" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2" data-translate="ac_params_title">Parametry dla AC:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="ac_phase" class="block text-sm font-medium text-gray-700" data-translate="ac_phase_label">Rodzaj instalacji:</label>
+                        <select id="ac_phase" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+                            <option value="single" data-translate="phase_single">Jednofazowa</option>
+                            <option value="three" data-translate="phase_three">Trójfazowa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="power_factor" class="block text-sm font-medium text-gray-700" data-translate="power_factor_label">sprawność cos(φ):</label>
+                        <input type="number" id="power_factor" value="0.95" min="0" max="1" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-sm font-medium text-gray-700" data-translate="current_source_label">Źródło prądu:</p>
+                    <div class="mt-1 flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <input id="calc_current_from_power" name="ac_current_source" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked onchange="toggleACInputs()">
+                            <label for="calc_current_from_power" class="ml-2 block text-sm font-medium text-gray-700" data-translate="calc_current_label">Oblicz z mocy silnika</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="enter_current_manually" name="ac_current_source" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" onchange="toggleACInputs()">
+                            <label for="enter_current_manually" class="ml-2 block text-sm font-medium text-gray-700" data-translate="enter_current_label">Wprowadź ręcznie</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- Data source selection -->
+            <div class="flex items-center justify-center space-x-6 mb-6">
+                <div class="flex items-center">
+                    <input id="predefined_data" name="data_source" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked onchange="toggleInputFields()">
+                    <label for="predefined_data" class="ml-3 block text-sm font-medium text-gray-700" data-translate="predefined_data_label">Predefiniowane dane</label>
+                </div>
+                <div class="flex items-center">
+                    <input id="custom_data" name="data_source" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" onchange="toggleInputFields()">
+                    <label for="custom_data" class="ml-3 block text-sm font-medium text-gray-700" data-translate="custom_data_label">Wprowadź własne dane</label>
+                </div>
+            </div>
+           
+            <!-- No component options -->
+            <div class="flex items-center justify-center space-x-6 mb-6">
+                <div class="flex items-center">
+                    <input id="no_wire" name="no_wire_checkbox" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" onchange="updateDetails()">
+                    <label for="no_wire" class="ml-3 block text-sm font-medium text-gray-700" data-translate="no_wire_label">Brak przewodu</label>
+                </div>
+                <div class="flex items-center">
+                    <input id="no_connector" name="no_connector_checkbox" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" onchange="updateDetails()">
+                    <label for="no_connector" class="ml-3 block text-sm font-medium text-gray-700" data-translate="no_connector_label">Brak wtyczki</label>
+                </div>
+            </div>
+
+
+            <!-- Predefined Data Section -->
+            <div id="predefinedSection">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="wireType" class="block text-sm font-medium text-gray-700" data-translate="select_wire_type">Wybierz typ przewodu (AWG):</label>
+                        <select id="wireType" onchange="updateDetails()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"></select>
+                        <div id="wireDetails" class="mt-4 p-4 text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200"></div>
+                    </div>
+                    <div>
+                        <label for="connectorType" class="block text-sm font-medium text-gray-700" data-translate="select_connector_type">Wybierz typ wtyczki:</label>
+                        <select id="connectorType" onchange="updateDetails()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"></select>
+                        <div id="connectorDetails" class="mt-4 p-4 text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Custom Data Section -->
+            <div id="customSection" class="hidden">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2" data-translate="enter_data_title">Wprowadź dane:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h4 class="font-medium text-gray-600" data-translate="wire_data_title">Dane przewodu (1m):</h4>
+                        <div>
+                            <label for="custom_wire_resistance_per_meter" class="block text-sm font-medium text-gray-700" data-translate="wire_resistance_label">Opór R [Ω/1m]:</label>
+                            <input type="number" id="custom_wire_resistance_per_meter" value="0.00412" min="0" step="0.00001" oninput="calculateCustomWireCurrents()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="custom_wire_weight_per_meter" class="block text-sm font-medium text-gray-700" data-translate="wire_weight_label">Waga w (g) na 1 m:</label>
+                            <input type="number" id="custom_wire_weight_per_meter" value="61" min="0" step="1" oninput="calculateCustomWireCurrents()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-translate="current_continuous_label">[A] (ciągły):</label>
+                            <p id="calculated_wire_current_continuous" class="calculated-value mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 sm:text-sm rounded-md shadow-sm"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-translate="current_max_100c_label">Max [A] (100°C):</label>
+                            <p id="calculated_wire_current_100c" class="calculated-value mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 sm:text-sm rounded-md shadow-sm"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-translate="current_max_10s_label">Max I [A] (10s i spalenie):</label>
+                            <p id="calculated_wire_current_10s" class="calculated-value mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 sm:text-sm rounded-md shadow-sm"></p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="font-medium text-gray-600" data-translate="connector_data_title">Dane wtyczki:</h4>
+                        <div>
+                            <label for="custom_connector_resistance" class="block text-sm font-medium text-gray-700" data-translate="connector_resistance_label">Opór R [Ω]:</label>
+                            <input type="number" id="custom_connector_resistance" value="0.00029" min="0" step="0.00001" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                         <div>
+                            <label for="custom_connector_current_continuous" class="block text-sm font-medium text-gray-700" data-translate="current_continuous_label">[A] (ciągły):</label>
+                            <input type="number" id="custom_connector_current_continuous" value="120" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="custom_connector_current_100c" class="block text-sm font-medium text-gray-700" data-translate="current_max_100c_label">Max [A] (100°C):</label>
+                            <input type="number" id="custom_connector_current_100c" value="140" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="custom_connector_current_10s" class="block text-sm font-medium text-gray-700" data-translate="current_max_10s_label">Max I [A] (10s i spalenie):</label>
+                            <input type="number" id="custom_connector_current_10s" value="270" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Common Inputs -->
+            <div>
+                <label for="cableLength" class="block text-sm font-medium text-gray-700" data-translate="cable_length_label">Długość kabla w cm (długość w jedną stronę):</label>
+                <input type="number" id="cableLength" value="100" min="10" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+
+            <!-- AC Dynamic Inputs -->
+            <div id="ac_dynamic_inputs">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="ac_power_inputs">
+                        <label for="motor_power" class="block text-sm font-medium text-gray-700" data-translate="motor_power_label">Moc silnika (P) w watach:</label>
+                        <input type="number" id="motor_power" value="2200" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    </div>
+                    <div id="ac_voltage_inputs">
+                        <label for="motor_voltage" class="block text-sm font-medium text-gray-700" data-translate="motor_voltage_label">Napięcie zasilania (U) w woltach:</label>
+                        <input type="number" id="motor_voltage" value="230" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Input (manual) -->
+            <div id="manual_current_input" class="hidden">
+                <label for="current" class="block text-sm font-medium text-gray-700" data-translate="current_label">Natężenie prądu (I) w amperach:</label>
+                <input type="number" id="current" value="10" min="0.1" step="0.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+           
+            <button onclick="calculateLosses()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" data-translate="calculate_button">
+                Oblicz
+            </button>
+
+
+            <!-- Results and warning messages -->
+            <div id="results" class="mt-6 p-4 border-t border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 mb-2" data-translate="results_title">Wyniki:</h2>
+                <div id="messageBox" class="mt-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg hidden" role="alert"></div>
+                
+                <div id="dc_results" class="mt-4 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700" data-translate="dc_results_title">Wyniki dla prądu stałego (DC)</h3>
+                    <div class="overflow-x-auto mt-2">
+                        <table class="w-full table-custom results-table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="component_header">Element</th>
+                                    <th data-translate="voltage_drop_header">Spadek napięcia [V]</th>
+                                    <th data-translate="power_loss_header">Straty mocy [W]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-translate="wire_header">Przewód</td>
+                                    <td id="dcWireVoltageDrop"></td>
+                                    <td id="dcWirePowerLoss"></td>
+                                </tr>
+                                <tr>
+                                    <td data-translate="connector_header">Wtyczka</td>
+                                    <td id="dcConnectorVoltageDrop"></td>
+                                    <td id="dcConnectorPowerLoss"></td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td data-translate="total_header">Całkowite</td>
+                                    <td id="dcTotalVoltageDrop"></td>
+                                    <td id="dcTotalPowerLoss"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="ac_results" class="mt-4 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700" data-translate="ac_results_title">Wyniki dla prądu zmiennego (AC)</h3>
+                    <div class="overflow-x-auto mt-2">
+                        <table class="w-full table-custom results-table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="component_header">Element</th>
+                                    <th data-translate="voltage_drop_header">Spadek napięcia [V]</th>
+                                    <th data-translate="power_loss_header">Straty mocy [W]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="acCalculatedCurrentRow">
+                                    <td data-translate="calculated_current_label">Obliczony prąd [A]</td>
+                                    <td id="acCalculatedCurrent" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td data-translate="wire_header">Przewód</td>
+                                    <td id="acWireVoltageDrop"></td>
+                                    <td id="acWirePowerLoss"></td>
+                                </tr>
+                                <tr>
+                                    <td data-translate="connector_header">Wtyczka</td>
+                                    <td id="acConnectorVoltageDrop"></td>
+                                    <td id="acConnectorPowerLoss"></td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td data-translate="total_header">Całkowite</td>
+                                    <td id="acTotalVoltageDrop"></td>
+                                    <td id="acTotalPowerLoss"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Formulas and Notes Section -->
+            <div class="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 mb-4" data-translate="formulas_notes_title">Wzory i Uwagi</h2>
+               
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4" data-translate="formulas_title">Używane wzory:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-center">
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_voltage_drop_dc">Spadek napięcia (DC): $$\\Delta U_{DC} = I \cdot R$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_power_loss">Straty mocy: $$P = I^2 \cdot R$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_current_ac1">Prąd (AC 1-faza): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_current_ac3">Prąd (AC 3-fazy): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_voltage_drop_ac1">Spadek napięcia (AC 1-faza): $$\\Delta U_{AC1} = I \\cdot R$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_voltage_drop_ac3">Spadek napięcia (AC 3-fazy): $$\\Delta U_{AC3} = I \\cdot R \\cdot \\sqrt{3}$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg col-span-1 md:col-span-2">
+                            <div data-translate="formula_custom_current">Prąd dla niestandardowego przewodu: $$I = \sqrt{\\frac{g \\cdot Y}{R}}$$}</div>
+                            <div class="text-xs mt-1" data-translate="formula_custom_current_where">gdzie: Y=1 dla prądu ciągłego, Y=1.3 dla prądu przy 100°C, oraz Y=4.5 dla prądu maksymalnego (10s).</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4" data-translate="notes_title">Uwagi:</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.636-1.21 2.37-1.21 3.006 0l5.426 10.36c.622 1.188-.234 2.64-1.503 2.64H4.334c-1.269 0-2.125-1.452-1.503-2.64L8.257 3.099zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+                            <span data-translate="note1_new">Wartości 'Max I [A] (10s i spalenie)' oraz '[A] (ciągły)' to wartości maksymalne. Przekroczenie prądu ciągłego może prowadzić do nadmiernego nagrzewania się kabli i wtyczek.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
+                            <span data-translate="note2_new">Wartości 'Max I [A] (10s i spalenie)' oznaczają czas, po którym wystąpią trwałe uszkodzenia, jeśli przekroczony zostanie maksymalny prąd.</span>
+                        </li>
+                         <li class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
+                            <span data-translate="note3_new">Dla danych niestandardowych, wartości prądów są przybliżone i nie zostały poddane testom (program może je zaniżać).</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                           <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
+                            <span data-translate="note4_new">W kalkulatorze uwzględniono oporność zarówno przewodu dodatniego, jak i ujemnego (długość kabla jest mnożona przez 2).</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                           <svg class="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.362 1.096a.75.75 0 00-.724 0L2.535 5.269A.75.75 0 002 5.952v8.096a.75.75 0 00.535.683l7.103 4.176a.75.75 0 00.724 0l7.103-4.176a.75.75 0 00.535-.683V5.952a.75.75 0 00-.535-.683L10.362 1.096zM11 1.954v6.89l6-3.518L11 1.954zM9 1.954L3 5.472l6 3.372V1.954zm0 8.845v6.247l-6-3.696V8.703l6 3.096zM11 17.046V10.8l6-3.096v6.15l-6 3.696z" /></svg>
+                           <span data-translate="note5_new"><b>Uwaga</b>: Wzór na prąd jest przeznaczony dla kabli miedzianych.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                           <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-1.25 12.25a.75.75 0 010-1.5.75.75 0 010 1.5zm.75-8.25c-.93 0-1.75.7-1.75 1.75v1.5a1.75 1.75 0 003.5 0v-1.5c0-1.05-.82-1.75-1.75-1.75zM10 12a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 12z" /></svg>
+                           <span data-translate="note6_new"><b>Uwaga</b>: Spadek napięcia dla prądu jednofazowego jest uproszczony i nie uwzględnia reaktancji. Spadek napięcia dla prądu trójfazowego jest spadkiem napięcia między fazami.</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                           <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0v-4a1 1 0 00-1-1z" /></svg>
+                           <span data-translate="note7_new"><b>Korekta Terminu:</b> Termin "sprawność cos(φ)" jest uproszczeniem. W elektrotechnice "sprawność" to $\eta$, natomiast "współczynnik mocy" to $\cos(\phi)$. W tym kalkulatorze, pole to odnosi się do współczynnika mocy.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- TRANSLATIONS ---
+        const translations = {
+            pl: {
+                main_title: "Zaawansowany Kalkulator",
+                power_type_dc_label: "Prąd stały (DC)",
+                power_type_ac_label: "Prąd zmienny (AC)",
+                ac_params_title: "Parametry dla AC:",
+                ac_phase_label: "Rodzaj instalacji:",
+                phase_single: "Jednofazowa",
+                phase_three: "Trójfazowa",
+                power_factor_label: "sprawność cos(φ):",
+                current_source_label: "Źródło prądu:",
+                calc_current_label: "Oblicz z mocy silnika",
+                enter_current_label: "Wprowadź ręcznie",
+                motor_power_label: "Moc silnika (P) w watach:",
+                motor_voltage_label: "Napięcie zasilania (U) w woltach:",
+                predefined_data_label: "Predefiniowane dane",
+                custom_data_label: "Wprowadź własne dane",
+                no_wire_label: "Brak przewodu",
+                no_connector_label: "Brak wtyczki",
+                select_wire_type: "Wybierz typ przewodu (AWG):",
+                select_connector_type: "Wybierz typ wtyczki:",
+                enter_data_title: "Wprowadź dane:",
+                wire_data_title: "Dane przewodu (1m):",
+                wire_resistance_label: "Opór R [Ω/1m]:",
+                connector_resistance_label: "Opór R [Ω]:",
+                wire_weight_label: "Waga w (g) na 1 m:",
+                current_continuous_label: "[A] (ciągły):",
+                current_max_100c_label: "Max [A] (100°C):",
+                current_max_10s_label: "Max I [A] (10s i spalenie):",
+                connector_data_title: "Dane wtyczki:",
+                cable_length_label: "Długość kabla w cm (długość w jedną stronę):",
+                current_label: "Natężenie prądu (I) w amperach:",
+                calculate_button: "Oblicz",
+                results_title: "Wyniki:",
+                dc_results_title: "Wyniki dla prądu stałego (DC)",
+                ac_results_title: "Wyniki dla prądu zmiennego (AC)",
+                component_header: "Element",
+                voltage_drop_header: "Spadek napięcia [V]",
+                power_loss_header: "Straty mocy [W]",
+                wire_header: "Przewód",
+                connector_header: "Wtyczka",
+                total_header: "Całkowite",
+                voltage_drop_label: "Spadek napięcia [V]",
+                power_loss_label: "Straty mocy [W]",
+                calculated_current_label: "Obliczony prąd [A]",
+                formulas_notes_title: "Wzory i Uwagi",
+                formulas_title: "Używane wzory:",
+                formula_voltage_drop_dc: "Spadek napięcia (DC): $$\\Delta U_{DC} = I \\cdot R$$",
+                formula_power_loss: "Straty mocy: $$P = I^2 \\cdot R$$",
+                formula_current_ac1: "Prąd (AC 1-faza): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$",
+                formula_current_ac3: "Prąd (AC 3-fazy): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$",
+                formula_voltage_drop_ac1: "Spadek napięcia (AC 1-faza): $$\\Delta U_{AC1} = I \\cdot R$$",
+                formula_voltage_drop_ac3: "Spadek napięcia (AC 3-fazy): $$\\Delta U_{AC3} = I \\cdot R \\cdot \\sqrt{3}$$",
+                formula_custom_current: "Prąd dla niestandardowego przewodu: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
+                formula_custom_current_where: "gdzie: Y=1 dla prądu ciągłego, Y=1.3 dla prądu przy 100°C, oraz Y=4.5 dla prądu maksymalnego (10s).",
+                notes_title: "Uwagi:",
+                note1_new: "Wartości 'Max I [A] (10s i spalenie)' oraz '[A] (ciągły)' to wartości maksymalne. Przekroczenie prądu ciągłego może prowadzić do nadmiernego nagrzewania się kabli i wtyczek.",
+                note2_new: "Wartości 'Max I [A] (10s i spalenie)' oznaczają czas, po którym wystąpią trwałe uszkodzenia, jeśli przekroczony zostanie maksymalny prąd.",
+                note3_new: "Dla danych niestandardowych, wartości prądów są przybliżone i nie zostały poddane testom (program może je zaniżać).",
+                note4_new: "W kalkulatorze uwzględniono oporność zarówno przewodu dodatniego, jak i ujemnego (długość kabla jest mnożona przez 2).",
+                note5_new: "<b>Uwaga</b>: Wzór na prąd jest przeznaczony dla kabli miedzianych.",
+                note6_new: "<b>Uwaga</b>: Spadek napięcia dla prądu jednofazowego jest uproszczony i nie uwzględnia reaktancji. Spadek napięcia dla prądu trójfazowego jest spadkiem napięcia między fazami.",
+                note7_new: "<b>Korekta Terminu:</b> Termin \"sprawność cos(φ)\" jest uproszczeniem. W elektrotechnice \"sprawność\" to $\\eta$, natomiast \"współczynnik mocy\" to $\\cos(\\phi)$. W tym kalkulatorze, pole to odnosi się do współczynnika mocy.",
+                no_wire_selected: "Brak przewodu",
+                no_connector_selected: "Brak wtyczki",
+                wire_spec_title: "Specyfikacja przewodu",
+                connector_spec_title: "Specyfikacja wtyczki",
+                brand_type_info: "Marka/Rodzaj",
+                brand_info: "Marka",
+                resistance_info: "Opór",
+                weight_info: "Waga",
+                error_invalid_current: "Proszę wprowadzić prawidłowe natężenie prądu.",
+                error_invalid_length: "Proszę wprowadzić prawidłową długość kabla, jeśli przewód jest wybrany.",
+                error_no_component: "Proszę wybrać co najmniej przewód lub wtyczkę.",
+                error_invalid_ac_inputs: "Proszę wprowadzić prawidłowe wartości mocy, napięcia i współczynnika mocy.",
+                warn_continuous_wire: "UWAGA: Prąd przekracza prąd ciągły dla przewodu.",
+                warn_100c_wire: "OSTRZEŻENIE: Prąd przekracza prąd dla wysokich temperatur dla przewodu.",
+                warn_10s_wire: "OSTRZEŻENIE: Prąd przekracza maksymalny prąd (10s) dla przewodu, co może prowadzić do jego spalenia.",
+                warn_continuous_connector: "UWAGA: Prąd przekracza prąd ciągły dla wtyczki.",
+                warn_100c_connector: "OSTRZEŻENIE: Prąd przekracza prąd dla wysokich temperatur dla wtyczki.",
+                warn_10s_connector: "OSTRZEŻENIE: Prąd przekracza maksymalny prąd (10s) dla wtyczki, co może prowadzić do jej spalenia."
+            },
+            en: {
+                main_title: "Advanced Calculator",
+                power_type_dc_label: "Direct Current (DC)",
+                power_type_ac_label: "Alternating Current (AC)",
+                ac_params_title: "AC Parameters:",
+                ac_phase_label: "Installation type:",
+                phase_single: "Single-phase",
+                phase_three: "Three-phase",
+                power_factor_label: "efficiency cos(φ):",
+                current_source_label: "Current source:",
+                calc_current_label: "Calculate from motor power",
+                enter_current_label: "Enter manually",
+                motor_power_label: "Motor power (P) in Watts:",
+                motor_voltage_label: "Supply voltage (U) in Volts:",
+                predefined_data_label: "Predefined data",
+                custom_data_label: "Enter custom data",
+                no_wire_label: "No wire",
+                no_connector_label: "No connector",
+                select_wire_type: "Select wire type (AWG):",
+                select_connector_type: "Select connector type:",
+                enter_data_title: "Enter data:",
+                wire_data_title: "Wire data (1m):",
+                wire_resistance_label: "Resistance R [Ω/1m]:",
+                connector_resistance_label: "Resistance R [Ω]:",
+                wire_weight_label: "Weight in (g) per 1m:",
+                current_continuous_label: "[A] (continuous):",
+                current_max_100c_label: "Max [A] (100°C):",
+                current_max_10s_label: "Max I [A] (10s & burnout):",
+                connector_data_title: "Connector data:",
+                cable_length_label: "Cable length in cm (one-way length):",
+                current_label: "Current (I) in Amperes:",
+                calculate_button: "Calculate",
+                results_title: "Results:",
+                dc_results_title: "Direct Current (DC) Results",
+                ac_results_title: "Alternating Current (AC) Results",
+                component_header: "Component",
+                voltage_drop_header: "Voltage Drop [V]",
+                power_loss_header: "Power Loss [W]",
+                wire_header: "Wire",
+                connector_header: "Connector",
+                total_header: "Total",
+                voltage_drop_label: "Voltage Drop [V]",
+                power_loss_label: "Power Loss [W]",
+                calculated_current_label: "Calculated Current [A]",
+                formulas_notes_title: "Formulas and Notes",
+                formulas_title: "Formulas Used:",
+                formula_voltage_drop_dc: "Voltage Drop (DC): $$\\Delta U_{DC} = I \\cdot R$$",
+                formula_power_loss: "Power Loss: $$P = I^2 \\cdot R$$",
+                formula_current_ac1: "Current (AC 1-phase): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$",
+                formula_current_ac3: "Current (AC 3-phase): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$",
+                formula_voltage_drop_ac1: "Voltage Drop (AC 1-phase): $$\\Delta U_{AC1} = I \\cdot R$$",
+                formula_voltage_drop_ac3: "Voltage Drop (AC 3-phase): $$\\Delta U_{AC3} = I \\cdot R \\cdot \\sqrt{3}$$",
+                formula_custom_current: "Current for custom wire: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
+                formula_custom_current_where: "where: Y=1 for continuous current, Y=1.3 for 100°C current, and Y=4.5 for max current (10s).",
+                notes_title: "Notes:",
+                note1_new: "'Max I [A] (10s & burnout)' and '[A] (continuous)' are maximum values. Exceeding continuous current can lead to excessive heating of cables and connectors.",
+                note2_new: "'Max I [A] (10s & burnout)' indicates the time after which permanent damage may occur if the maximum current is exceeded.",
+                note3_new: "For custom data, the current values are approximate and have not been tested (the program may underestimate them).",
+                note4_new: "The calculator accounts for the resistance of both the positive and negative wires (cable length is multiplied by 2).",
+                note5_new: "<b>Note</b>: The current formula is designed for copper cables.",
+                note6_new: "<b>Note</b>: The voltage drop for single-phase AC is simplified and does not account for reactance. The voltage drop for three-phase AC is the line-to-line voltage drop.",
+                note7_new: "<b>Term Correction:</b> The term \"efficiency cos(φ)\" is a simplification. In electrical engineering, \"efficiency\" is $\\eta$, while \"power factor\" is $\\cos(\\phi)$. This calculator field refers to the power factor.",
+                no_wire_selected: "No wire",
+                no_connector_selected: "No connector",
+                wire_spec_title: "Wire Specification",
+                connector_spec_title: "Connector Specification",
+                brand_type_info: "Brand/Type",
+                brand_info: "Brand",
+                resistance_info: "Resistance",
+                weight_info: "Weight",
+                error_invalid_current: "Please enter a valid current.",
+                error_invalid_length: "Please enter a valid cable length if a wire is selected.",
+                error_no_component: "Please select at least a wire or a connector.",
+                error_invalid_ac_inputs: "Please enter valid power, voltage, and power factor values.",
+                warn_continuous_wire: "CAUTION: Current exceeds the continuous rating for the wire.",
+                warn_100c_wire: "WARNING: Current exceeds the high-temperature rating for the wire.",
+                warn_10s_wire: "WARNING: Current exceeds the maximum (10s) rating for the wire, which can lead to burnout.",
+                warn_continuous_connector: "CAUTION: Current exceeds the continuous rating for the connector.",
+                warn_100c_connector: "WARNING: Current exceeds the high-temperature rating for the connector.",
+                warn_10s_connector: "WARNING: Current exceeds the maximum (10s) rating for the connector, which can lead to burnout."
+            },
+            es: {
+                main_title: "Calculadora Avanzada",
+                power_type_dc_label: "Corriente Continua (DC)",
+                power_type_ac_label: "Corriente Alterna (AC)",
+                ac_params_title: "Parámetros para AC:",
+                ac_phase_label: "Tipo de instalación:",
+                phase_single: "Monofásica",
+                phase_three: "Trifásica",
+                power_factor_label: "eficiencia cos(φ):",
+                current_source_label: "Fuente de corriente:",
+                calc_current_label: "Calcular desde la potencia del motor",
+                enter_current_label: "Introducir manualmente",
+                motor_power_label: "Potencia del motor (P) en vatios:",
+                motor_voltage_label: "Voltaje de suministro (U) en voltios:",
+                predefined_data_label: "Datos predefinidos",
+                custom_data_label: "Introducir datos propios",
+                no_wire_label: "Sin cable",
+                no_connector_label: "Sin conector",
+                select_wire_type: "Seleccione el tipo de cable (AWG):",
+                select_connector_type: "Seleccione el tipo de conector:",
+                enter_data_title: "Introducir datos:",
+                wire_data_title: "Datos del cable (1m):",
+                wire_resistance_label: "Resistencia R [Ω/1m]:",
+                connector_resistance_label: "Resistencia R [Ω]:",
+                wire_weight_label: "Peso en (g) por 1m:",
+                current_continuous_label: "[A] (continuo):",
+                current_max_100c_label: "Máx [A] (100°C):",
+                current_max_10s_label: "Máx I [A] (10s y quemado):",
+                connector_data_title: "Datos del conector:",
+                cable_length_label: "Longitud del cable en cm (unidireccional):",
+                current_label: "Corriente (I) en Amperios:",
+                calculate_button: "Calcular",
+                results_title: "Resultados:",
+                dc_results_title: "Resultados de Corriente Continua (DC)",
+                ac_results_title: "Resultados de Corriente Alterna (AC)",
+                component_header: "Elemento",
+                voltage_drop_header: "Caída de Tensión [V]",
+                power_loss_header: "Pérdida de Potencia [W]",
+                wire_header: "Cable",
+                connector_header: "Conector",
+                total_header: "Total",
+                voltage_drop_label: "Caída de Tensión [V]",
+                power_loss_label: "Pérdida de Potencia [W]",
+                calculated_current_label: "Corriente calculada [A]",
+                formulas_notes_title: "Fórmulas y Notas",
+                formulas_title: "Fórmulas Usadas:",
+                formula_voltage_drop_dc: "Caída de Tensión (DC): $$\\Delta U_{DC} = I \\cdot R$$",
+                formula_power_loss: "Pérdida de Potencia: $$P = I^2 \\cdot R$$",
+                formula_current_ac1: "Corriente (AC 1-fase): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$",
+                formula_current_ac3: "Corriente (AC 3-fases): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$",
+                formula_voltage_drop_ac1: "Caída de Tensión (AC 1-fase): $$\\Delta U_{AC1} = I \\cdot R$$",
+                formula_voltage_drop_ac3: "Caída de Tensión (AC 3-fases): $$\\Delta U_{AC3} = I \\cdot R \\cdot \\sqrt{3}$$",
+                formula_custom_current: "Corriente para cable personalizado: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
+                formula_custom_current_where: "donde: Y=1 para corriente continua, Y=1.3 para 100°C, y Y=4.5 para corriente máxima (10s).",
+                notes_title: "Notas:",
+                note1_new: "'Máx I [A] (10s y quemado)' y '[A] (continuo)' son valores máximos. Superar la corriente continua puede causar calentamiento excesivo.",
+                note2_new: "'Máx I [A] (10s y quemado)' indica el tiempo tras el cual puede ocurrir daño permanente si se excede la corriente máxima.",
+                note3_new: "Para datos personalizados, los valores de corriente son aproximados y no han sido probados (el programa puede subestimarlos).",
+                note4_new: "La calculadora considera la resistencia de los cables positivo y negativo (la longitud del cable se multiplica por 2).",
+                note5_new: "<b>Nota</b>: La fórmula de corriente es para cables de cobre.",
+                note6_new: "<b>Nota</b>: La caída de tensión para CA monofásica se simplifica y no considera la reactancia. La caída de tensión para CA trifásica es la caída de tensión línea-a-línea.",
+                note7_new: "<b>Corrección de Término:</b> El término \"eficiencia cos(φ)\" es una simplificación. En ingeniería eléctrica, \"eficiencia\" es $\\eta$, mientras que \"factor de potencia\" es $\\cos(\\phi)$. Este campo de la calculadora se refiere al factor de potencia.",
+                no_wire_selected: "Sin cable",
+                no_connector_selected: "Sin conector",
+                wire_spec_title: "Especificación del Cable",
+                connector_spec_title: "Especificación del Conector",
+                brand_type_info: "Marca/Tipo",
+                brand_info: "Marca",
+                resistance_info: "Resistencia",
+                weight_info: "Peso",
+                error_invalid_current: "Por favor, introduzca una corriente válida.",
+                error_invalid_length: "Por favor, introduzca una longitud de cable válida si se selecciona un cable.",
+                error_no_component: "Por favor, seleccione al menos un cable o un conector.",
+                error_invalid_ac_inputs: "Por favor, introduzca valores válidos de potencia, voltaje y factor de potencia.",
+                warn_continuous_wire: "PRECAUCIÓN: La corriente excede la nominal continua del cable.",
+                warn_100c_wire: "ADVERTENCIA: La corriente excede la nominal de alta temperatura del cable.",
+                warn_10s_wire: "ADVERTENCIA: La corriente excede la nominal máxima (10s) del cable, lo que puede quemarlo.",
+                warn_continuous_connector: "PRECAUCIÓN: La corriente excede la nominal continua del conector.",
+                warn_100c_connector: "ADVERTENCIA: La corriente excede la nominal de alta temperatura del conector.",
+                warn_10s_connector: "ADVERTENCIA: La corriente excede la nominal máxima (10s) del conector, lo que puede quemarlo."
+            },
+            zh: {
+                main_title: "高级计算器",
+                power_type_dc_label: "直流电 (DC)",
+                power_type_ac_label: "交流电 (AC)",
+                ac_params_title: "交流电参数:",
+                ac_phase_label: "安装类型:",
+                phase_single: "单相",
+                phase_three: "三相",
+                power_factor_label: "效率 cos(φ):",
+                current_source_label: "电流来源:",
+                calc_current_label: "从电机功率计算",
+                enter_current_label: "手动输入",
+                motor_power_label: "电机功率 (P) (瓦特):",
+                motor_voltage_label: "供电电压 (U) (伏特):",
+                predefined_data_label: "预定义数据",
+                custom_data_label: "输入自定义数据",
+                no_wire_label: "无电线",
+                no_connector_label: "无连接器",
+                select_wire_type: "选择电线类型 (AWG):",
+                select_connector_type: "选择连接器类型:",
+                enter_data_title: "输入数据:",
+                wire_data_title: "电线数据 (1米):",
+                wire_resistance_label: "电阻 R [Ω/1m]:",
+                connector_resistance_label: "电阻 R [Ω]:",
+                wire_weight_label: "每米重量 (克):",
+                current_continuous_label: "[A] (连续):",
+                current_max_100c_label: "最大 [A] (100°C):",
+                current_max_10s_label: "最大 I [A] (10秒并烧毁):",
+                connector_data_title: "连接器数据:",
+                cable_length_label: "电缆长度 (厘米, 单向):",
+                current_label: "电流 (I) (安培):",
+                calculate_button: "计算",
+                results_title: "结果:",
+                dc_results_title: "直流电 (DC) 结果",
+                ac_results_title: "交流电 (AC) 结果",
+                component_header: "元件",
+                voltage_drop_header: "电压降 [V]",
+                power_loss_header: "功率损耗 [W]",
+                wire_header: "电线",
+                connector_header: "连接器",
+                total_header: "总计",
+                voltage_drop_label: "电压降 [V]",
+                power_loss_label: "功率损耗 [W]",
+                calculated_current_label: "计算出的电流 [A]",
+                formulas_notes_title: "公式与说明",
+                formulas_title: "使用公式:",
+                formula_voltage_drop_dc: "电压降 (DC): $$\\Delta U_{DC} = I \\cdot R$$",
+                formula_power_loss: "功率损耗: $$P = I^2 \\cdot R$$",
+                formula_current_ac1: "电流 (AC 单相): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$",
+                formula_current_ac3: "电流 (AC 三相): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$",
+                formula_voltage_drop_ac1: "电压降 (AC 单相): $$\\Delta U_{AC1} = I \\cdot R$$",
+                formula_voltage_drop_ac3: "电压降 (AC 三相): $$\\Delta U_{AC3} = I \\cdot R \\cdot \\sqrt{3}$$",
+                formula_custom_current: "自定义电线电流: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
+                formula_custom_current_where: "其中: Y=1 对应连续电流, Y=1.3 对应100°C电流, Y=4.5 对应最大电流 (10秒).",
+                notes_title: "说明:",
+                note1_new: "'最大 I [A] (10秒并烧毁)' 和 '[A] (连续)' 是最大值。超过连续电流可能导致电缆和连接器过热。",
+                note2_new: "'最大 I [A] (10秒并烧毁)' 表示如果超过最大电流，可能发生永久性损坏的时间。",
+                note3_new: "对于自定义数据, 电流值是近似值，未经测试（程序可能低估它们）。",
+                note4_new: "计算器考虑了正负两根电线的电阻 (电缆长度乘以2)。",
+                note5_new: "<b>注意</b>: 电流公式专为铜缆设计。",
+                note6_new: "<b>注意</b>: 交流单相的电压降被简化，未考虑电抗。交流三相的电压降是线间电压降。",
+                note7_new: "<b>术语修正:</b> 术语 \"效率 cos(φ)\" 是一个简化。在电气工程中, \"效率\" 是 $\\eta$, 而 \"功率因数\" 是 $\\cos(\\phi)$. 此计算器字段指的是功率因数。",
+                no_wire_selected: "无电线",
+                no_connector_selected: "无连接器",
+                wire_spec_title: "电线规格",
+                connector_spec_title: "连接器规格",
+                brand_type_info: "品牌/类型",
+                brand_info: "品牌",
+                resistance_info: "电阻",
+                weight_info: "重量",
+                error_invalid_current: "请输入有效的电流值。",
+                error_invalid_length: "如果选择了电线，请输入有效的电缆长度。",
+                error_no_component: "请至少选择电线或连接器。",
+                error_invalid_ac_inputs: "请输入有效的功率、电压和功率因数。",
+                warn_continuous_wire: "注意：电流超过电线的连续额定值。",
+                warn_100c_wire: "警告：电流超过电线的高温额定值。",
+                warn_10s_wire: "警告：电流超过电线的最大额定值（10秒），可能导致烧毁。",
+                warn_continuous_connector: "注意：电流超过连接器的连续额定值。",
+                warn_100c_connector: "警告：电流超过连接器的高温额定值。",
+                warn_10s_connector: "警告：电流超过连接器的最大额定值（10秒），可能导致烧毁。"
+            }
+        };
+
+
+        // --- DATA ---
+        const wireData = {
+            '10AWG': { 'resistance_per_meter': 0.00412, 'weight_per_meter': 61, 'current_continuous': 140, 'current_max_100c': 160, 'current_max_10s': 270 },
+            '12AWG': { 'resistance_per_meter': 0.0068,  'weight_per_meter': 38.8, 'current_continuous': 88,  'current_max_100c': 105, 'current_max_10s': 180 },
+            '13AWG': { 'resistance_per_meter': 0.0075,  'weight_per_meter': 34, 'current_continuous': 78,  'current_max_100c': 95, 'current_max_10s': 153 },
+            '14AWG': { 'resistance_per_meter': 0.0112,  'weight_per_meter': 26.6, 'current_continuous': 55,  'current_max_100c': 65, 'current_max_10s': 120 },
+            '16AWG': { 'resistance_per_meter': 0.0153,  'weight_per_meter': 19.6, 'current_continuous': 42,  'current_max_100c': 50, 'current_max_10s': 90 },
+            '18AWG': { 'resistance_per_meter': 0.0283,  'weight_per_meter': 11, 'current_continuous': 22,  'current_max_100c': 28, 'current_max_10s': 55 }
+        };
+        const connectorData = {
+            'XT90-H': { 'resistance': 0.00029, 'current_continuous': 120, 'current_max_100c': 140, 'current_max_10s': 270 },
+            'XT60-H': { 'resistance': 0.00041, 'current_continuous': 75,  'current_max_100c': 90, 'current_max_10s': 180 },
+            'XT30-H': { 'resistance': 0.00077, 'current_continuous': 30,  'current_max_100c': 35, 'current_max_10s': 60 }
+        };
+        const fullWireData = {
+            '10AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' },
+            '12AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' },
+            '13AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' },
+            '14AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' },
+            '16AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' },
+            '18AWG': { 'brand_type': 'TURNIGY / HIGH QUALITY' }
+        };
+        const fullConnectorData = {
+            'XT90-H': { 'brand': 'AMASS' },
+            'XT60-H': { 'brand': 'AMASS' },
+            'XT30-H': { 'brand': 'AMASS' }
+        };
+
+
+        // --- CORE FUNCTIONS ---
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            document.getElementById('moonIcon').classList.toggle('hidden', isDarkMode);
+            document.getElementById('sunIcon').classList.toggle('hidden', !isDarkMode);
+        }
+
+
+        function calculateCustomWireCurrents() {
+            const resistance = parseFloat(document.getElementById('custom_wire_resistance_per_meter').value);
+            const weight = parseFloat(document.getElementById('custom_wire_weight_per_meter').value);
+
+
+            if (isNaN(resistance) || isNaN(weight) || resistance <= 0 || weight <= 0) {
+                document.getElementById('calculated_wire_current_continuous').textContent = 'N/A';
+                document.getElementById('calculated_wire_current_100c').textContent = 'N/A';
+                document.getElementById('calculated_wire_current_10s').textContent = 'N/A';
+                return { current_continuous: 0, current_max_100c: 0, current_max_10s: 0 };
+            }
+
+
+            const Y_continuous = 1;
+            const Y_100c = 1.3;
+            const Y_10s = 4.5;
+           
+            const continuous = Math.sqrt((weight * Y_continuous) / resistance);
+            const max100c = Math.sqrt((weight * Y_100c) / resistance);
+            const max10s = Math.sqrt((weight * Y_10s) / resistance);
+           
+            document.getElementById('calculated_wire_current_continuous').textContent = `${continuous.toFixed(2)} A`;
+            document.getElementById('calculated_wire_current_100c').textContent = `${max100c.toFixed(2)} A`;
+            document.getElementById('calculated_wire_current_10s').textContent = `${max10s.toFixed(2)} A`;
+
+
+            return { current_continuous: continuous, current_max_100c: max100c, current_max_10s: max10s };
+        }
+
+
+        function toggleInputFields() {
+            const isPredefined = document.getElementById('predefined_data').checked;
+            document.getElementById('predefinedSection').classList.toggle('hidden', !isPredefined);
+            document.getElementById('customSection').classList.toggle('hidden', isPredefined);
+            updateDetails();
+        }
+
+        function toggleACInputs() {
+            const isAC = document.getElementById('power_type_ac').checked;
+            const calcFromPower = document.getElementById('calc_current_from_power').checked;
+            const manualCurrentSection = document.getElementById('manual_current_input');
+            const acPowerInputsSection = document.getElementById('ac_power_inputs');
+            const acVoltageInputsSection = document.getElementById('ac_voltage_inputs');
+            
+            if (isAC) {
+                if (calcFromPower) {
+                    manualCurrentSection.classList.add('hidden');
+                    acPowerInputsSection.classList.remove('hidden');
+                    acVoltageInputsSection.classList.remove('hidden');
+                } else {
+                    manualCurrentSection.classList.remove('hidden');
+                    acPowerInputsSection.classList.add('hidden');
+                    acVoltageInputsSection.classList.add('hidden');
+                }
+            } else {
+                manualCurrentSection.classList.remove('hidden');
+                acPowerInputsSection.classList.add('hidden');
+                acVoltageInputsSection.classList.add('hidden');
+            }
+            // Clear results when toggling inputs
+            document.getElementById('dc_results').classList.add('hidden');
+            document.getElementById('ac_results').classList.add('hidden');
+        }
+        
+        function togglePowerType() {
+            const isAC = document.getElementById('power_type_ac').checked;
+            document.getElementById('ac_params').classList.toggle('hidden', !isAC);
+            
+            // Toggle visibility for AC-specific inputs
+            const currentInput = document.getElementById('current');
+            const acDynamicInputs = document.getElementById('ac_dynamic_inputs');
+            
+            if (isAC) {
+                acDynamicInputs.classList.remove('hidden');
+            } else {
+                acDynamicInputs.classList.add('hidden');
+            }
+            toggleACInputs();
+
+            // Clear results when changing power type
+            document.getElementById('dc_results').classList.add('hidden');
+            document.getElementById('ac_results').classList.add('hidden');
+        }
+
+
+        function populateDropdowns() {
+            const wireTypeSelect = document.getElementById('wireType');
+            const connectorTypeSelect = document.getElementById('connectorType');
+            wireTypeSelect.innerHTML = '';
+            connectorTypeSelect.innerHTML = '';
+
+
+            for (const key in wireData) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                wireTypeSelect.appendChild(option);
+            }
+            for (const key in connectorData) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                connectorTypeSelect.appendChild(option);
+            }
+        }
+       
+        function updateDetails() {
+            const lang = localStorage.getItem('userLanguage') || 'pl';
+            const T = translations[lang];
+            const isPredefined = document.getElementById('predefined_data').checked;
+            const noWire = document.getElementById('no_wire').checked;
+            const noConnector = document.getElementById('no_connector').checked;
+           
+            const wireTypeSelect = document.getElementById('wireType');
+            const connectorTypeSelect = document.getElementById('connectorType');
+            const wireDetailsDiv = document.getElementById('wireDetails');
+            const connectorDetailsDiv = document.getElementById('connectorDetails');
+            const cableLengthInput = document.getElementById('cableLength');
+
+
+            const customWireInputs = document.querySelectorAll('#customSection .space-y-4:first-of-type input');
+            const customConnectorInputs = document.querySelectorAll('#customSection .space-y-4:last-of-type input');
+           
+            cableLengthInput.disabled = noWire;
+            cableLengthInput.classList.toggle('disabled-element', noWire);
+            document.querySelector('label[for="cableLength"]').classList.toggle('text-gray-400', noWire);
+           
+            if (isPredefined) {
+                wireTypeSelect.disabled = noWire;
+                wireTypeSelect.classList.toggle('disabled-element', noWire);
+                document.querySelector('label[for="wireType"]').classList.toggle('text-gray-400', noWire);
+                if (!noWire) {
+                    const wireType = wireTypeSelect.value;
+                    const selectedWire = fullWireData[wireType];
+                    const wireCalcData = wireData[wireType];
+                    wireDetailsDiv.innerHTML = `
+                        <p class="font-bold">${T.wire_spec_title} ${wireType}:</p>
+                        <ul class="list-disc list-inside mt-1 space-y-1 text-xs">
+                            <li><span>${T.brand_type_info}:</span> ${selectedWire.brand_type}</li>
+                            <li><span>${T.wire_resistance_label}</span> ${wireCalcData.resistance_per_meter}</li>
+                            <li><span>${T.weight_info} [g/1m]:</span> ${wireCalcData.weight_per_meter}</li>
+                            <li><span>${T.current_continuous_label}</span> ${wireCalcData.current_continuous} A</li>
+                            <li><span>${T.current_max_100c_label}</span> ${wireCalcData.current_max_100c} A</li>
+                            <li><span>${T.current_max_10s_label}</span> ${wireCalcData.current_max_10s} A</li>
+                        </ul>`;
+                } else {
+                    wireDetailsDiv.innerHTML = `<p class="font-bold text-gray-400">${T.no_wire_selected}</p>`;
+                }
+            } else {
+                customWireInputs.forEach(input => {
+                    input.disabled = noWire;
+                    input.classList.toggle('disabled-element', noWire);
+                    document.querySelector(`label[for="${input.id}"]`).classList.toggle('text-gray-400', noWire);
+                });
+                ['calculated_wire_current_continuous', 'calculated_wire_current_100c', 'calculated_wire_current_10s'].forEach(id => {
+                    document.getElementById(id).parentElement.classList.toggle('text-gray-400', noWire);
+                });
+            }
+
+
+            if (isPredefined) {
+                connectorTypeSelect.disabled = noConnector;
+                connectorTypeSelect.classList.toggle('disabled-element', noConnector);
+                document.querySelector('label[for="connectorType"]').classList.toggle('text-gray-400', noConnector);
+                if (!noConnector) {
+                    const connectorType = connectorTypeSelect.value;
+                    const selectedConnector = fullConnectorData[connectorType];
+                    const connectorCalcData = connectorData[connectorType];
+                    connectorDetailsDiv.innerHTML = `
+                        <p class="font-bold">${T.connector_spec_title} ${connectorType}:</p>
+                        <ul class="list-disc list-inside mt-1 space-y-1 text-xs">
+                            <li><span>${T.brand_info}:</span> ${selectedConnector.brand}</li>
+                            <li><span>${T.connector_resistance_label}</span> ${connectorCalcData.resistance}</li>
+                            <li><span>${T.current_continuous_label}</span> ${connectorCalcData.current_continuous} A</li>
+                            <li><span>${T.current_max_100c_label}</span> ${connectorCalcData.current_max_100c} A</li>
+                            <li><span>${T.current_max_10s_label}</span> ${connectorCalcData.current_max_10s} A</li>
+                        </ul>`;
+                } else {
+                    connectorDetailsDiv.innerHTML = `<p class="font-bold text-gray-400">${T.no_connector_selected}</p>`;
+                }
+            } else {
+                customConnectorInputs.forEach(input => {
+                    input.disabled = noConnector;
+                    input.classList.toggle('disabled-element', noConnector);
+                    document.querySelector(`label[for="${input.id}"]`).classList.toggle('text-gray-400', noConnector);
+                });
+            }
+            
+            // Clear results when updating details
+            document.getElementById('dc_results').classList.add('hidden');
+            document.getElementById('ac_results').classList.add('hidden');
+        }
+       
+        function calculateLosses() {
+            const lang = localStorage.getItem('userLanguage') || 'pl';
+            const T = translations[lang];
+            const isPredefined = document.getElementById('predefined_data').checked;
+            const noWire = document.getElementById('no_wire').checked;
+            const noConnector = document.getElementById('no_connector').checked;
+            const isAC = document.getElementById('power_type_ac').checked;
+            const calcFromPower = document.getElementById('calc_current_from_power').checked;
+           
+            const cableLengthInCm = parseFloat(document.getElementById('cableLength').value);
+            const cableLength = cableLengthInCm / 100;
+            const powerFactor = parseFloat(document.getElementById('power_factor').value);
+            const acPhase = document.getElementById('ac_phase').value;
+            const messageBox = document.getElementById('messageBox');
+           
+            messageBox.innerHTML = '';
+            messageBox.classList.add('hidden');
+            document.getElementById('dc_results').classList.add('hidden');
+            document.getElementById('ac_results').classList.add('hidden');
+            
+            let current;
+            if (isAC && calcFromPower) {
+                const motorPower = parseFloat(document.getElementById('motor_power').value);
+                const motorVoltage = parseFloat(document.getElementById('motor_voltage').value);
+                
+                if (isNaN(motorPower) || motorPower <= 0 || isNaN(motorVoltage) || motorVoltage <= 0 || isNaN(powerFactor) || powerFactor <= 0 || powerFactor > 1) {
+                    messageBox.textContent = T.error_invalid_ac_inputs;
+                    messageBox.classList.remove('hidden');
+                    return;
+                }
+                
+                if (acPhase === 'single') {
+                    current = motorPower / (motorVoltage * powerFactor);
+                } else { // Three-phase
+                    current = motorPower / (Math.sqrt(3) * motorVoltage * powerFactor);
+                }
+                document.getElementById('acCalculatedCurrent').textContent = current.toFixed(4);
+            } else {
+                current = parseFloat(document.getElementById('current').value);
+                if (isNaN(current) || current <= 0) {
+                    messageBox.textContent = T.error_invalid_current;
+                    messageBox.classList.remove('hidden');
+                    return;
+                }
+            }
+
+
+            if (!noWire && (isNaN(cableLength) || cableLength <= 0)) {
+                messageBox.textContent = T.error_invalid_length;
+                messageBox.classList.remove('hidden');
+                return;
+            }
+            if (noWire && noConnector) {
+                messageBox.textContent = T.error_no_component;
+                messageBox.classList.remove('hidden');
+                return;
+            }
+            if (isAC && (isNaN(powerFactor) || powerFactor <= 0 || powerFactor > 1)) {
+                messageBox.textContent = "Proszę wprowadzić prawidłowy współczynnik mocy (wartość od 0 do 1).";
+                messageBox.classList.remove('hidden');
+                return;
+            }
+
+
+            let wireResistancePerMeter = 0, wireContinuousCurrent = Infinity, wireMax100cCurrent = Infinity, wireMax10sCurrent = Infinity;
+            let connectorResistance = 0, connectorContinuousCurrent = Infinity, connectorMax100cCurrent = Infinity, connectorMax10sCurrent = Infinity;
+            let messages = [];
+
+
+            if (!noWire) {
+                if (isPredefined) {
+                    const selectedWire = wireData[document.getElementById('wireType').value];
+                    wireResistancePerMeter = selectedWire.resistance_per_meter;
+                    wireContinuousCurrent = selectedWire.current_continuous;
+                    wireMax100cCurrent = selectedWire.current_max_100c;
+                    wireMax10sCurrent = selectedWire.current_max_10s;
+                } else {
+                    wireResistancePerMeter = parseFloat(document.getElementById('custom_wire_resistance_per_meter').value);
+                    const customCurrents = calculateCustomWireCurrents();
+                    wireContinuousCurrent = customCurrents.current_continuous;
+                    wireMax100cCurrent = customCurrents.current_max_100c;
+                    wireMax10sCurrent = customCurrents.current_max_10s;
+                }
+                if (current > wireMax10sCurrent) messages.push(T.warn_10s_wire);
+                else if (current > wireMax100cCurrent) messages.push(T.warn_100c_wire);
+                else if (current > wireContinuousCurrent) messages.push(T.warn_continuous_wire);
+            }
+
+
+            if (!noConnector) {
+                if (isPredefined) {
+                    const selectedConnector = connectorData[document.getElementById('connectorType').value];
+                    connectorResistance = selectedConnector.resistance;
+                    connectorContinuousCurrent = selectedConnector.current_continuous;
+                    connectorMax100cCurrent = selectedConnector.current_max_100c;
+                    connectorMax10sCurrent = selectedConnector.current_max_10s;
+                } else {
+                    connectorResistance = parseFloat(document.getElementById('custom_connector_resistance').value);
+                    connectorContinuousCurrent = parseFloat(document.getElementById('custom_connector_current_continuous').value);
+                    connectorMax100cCurrent = parseFloat(document.getElementById('custom_connector_current_100c').value);
+                    connectorMax10sCurrent = parseFloat(document.getElementById('custom_connector_current_10s').value);
+                }
+                if (current > connectorMax10sCurrent) messages.push(T.warn_10s_connector);
+                else if (current > connectorMax100cCurrent) messages.push(T.warn_100c_connector);
+                else if (current > connectorContinuousCurrent) messages.push(T.warn_continuous_connector);
+            }
+           
+            if (messages.length > 0) {
+                messageBox.innerHTML = messages.join('<br>');
+                messageBox.classList.remove('hidden');
+            }
+
+
+            const wireResistance = noWire ? 0 : wireResistancePerMeter * cableLength * 2;
+            const connectorResistanceTotal = noConnector ? 0 : connectorResistance;
+            const totalResistance = wireResistance + connectorResistanceTotal;
+
+            const wireVoltageDrop = current * wireResistance;
+            const connectorVoltageDrop = current * connectorResistanceTotal;
+            const totalVoltageDrop = isAC && acPhase === 'three' ? current * wireResistance * Math.sqrt(3) + current * connectorResistanceTotal : current * totalResistance;
+
+            const wirePowerLoss = Math.pow(current, 2) * wireResistance;
+            const connectorPowerLoss = Math.pow(current, 2) * connectorResistanceTotal;
+            const totalPowerLoss = wirePowerLoss + connectorPowerLoss;
+
+
+            if (isAC) {
+                document.getElementById('ac_results').classList.remove('hidden');
+                document.getElementById('acWireVoltageDrop').textContent = wireVoltageDrop.toFixed(4);
+                document.getElementById('acWirePowerLoss').textContent = wirePowerLoss.toFixed(4);
+                document.getElementById('acConnectorVoltageDrop').textContent = connectorVoltageDrop.toFixed(4);
+                document.getElementById('acConnectorPowerLoss').textContent = connectorPowerLoss.toFixed(4);
+                document.getElementById('acTotalVoltageDrop').textContent = totalVoltageDrop.toFixed(4);
+                document.getElementById('acTotalPowerLoss').textContent = totalPowerLoss.toFixed(4);
+                
+                document.getElementById('acCalculatedCurrentRow').classList.toggle('hidden', !calcFromPower);
+            } else {
+                document.getElementById('dc_results').classList.remove('hidden');
+                document.getElementById('dcWireVoltageDrop').textContent = wireVoltageDrop.toFixed(4);
+                document.getElementById('dcWirePowerLoss').textContent = wirePowerLoss.toFixed(4);
+                document.getElementById('dcConnectorVoltageDrop').textContent = connectorVoltageDrop.toFixed(4);
+                document.getElementById('dcConnectorPowerLoss').textContent = connectorPowerLoss.toFixed(4);
+                document.getElementById('dcTotalVoltageDrop').textContent = totalVoltageDrop.toFixed(4);
+                document.getElementById('dcTotalPowerLoss').textContent = totalPowerLoss.toFixed(4);
+            }
+        }
+
+
+        // --- LANGUAGE FUNCTIONS ---
+        function setLanguage(lang) {
+            localStorage.setItem('userLanguage', lang);
+            document.documentElement.lang = lang;
+            const T = translations[lang];
+
+
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (T[key]) {
+                    el.innerHTML = T[key];
+                }
+            });
+           
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+
+
+            updateDetails();
+        }
+
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelector').value;
+            setLanguage(lang);
+        }
+
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('moonIcon').classList.add('hidden');
+                document.getElementById('sunIcon').classList.remove('hidden');
+            }
+           
+            const savedLang = localStorage.getItem('userLanguage') || 'pl';
+            document.getElementById('languageSelector').value = savedLang;
+           
+            populateDropdowns();
+            setLanguage(savedLang);
+            toggleInputFields();
+            togglePowerType();
+            calculateCustomWireCurrents();
+        };
+    </script>
+</body>
+</html>
+
+
