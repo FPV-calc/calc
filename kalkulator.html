@@ -205,69 +205,60 @@
             color: #795548;
         }
 
-        /* Dark Mode Styles (zmieniony na łagodniejszy) */
+        /* Dark Mode Styles */
         body.dark-mode {
-            background-color: #212529; /* Ciemnoszary, bardziej miękki */
+            background-color: #111827;
         }
         body.dark-mode .container {
-            background-color: #2c313a; /* Łagodniejszy ciemny kontener */
-            border-color: #4a5568;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background-color: #1f2937;
+            border-color: #4b5563;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
         body.dark-mode label {
-            color: #e2e8f0; /* Jasny tekst, ale nie czysta biel */
+            color: #d1d5db;
         }
         body.dark-mode input[type="number"] {
-            background-color: #3b414d; /* Ciemniejszy kolor tła inputów */
-            border-color: #5d6675;
-            color: #e2e8f0; /* Jasny tekst dla inputów */
+            background-color: #374151;
+            border-color: #6b7280;
+            color: #f3f4f6;
         }
         body.dark-mode input[type="number"]:focus {
-            border-color: #63b3ed;
-            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.25);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
         }
         body.dark-mode h1 {
-            color: #e2e8f0; /* Jasny tekst dla głównego tytułu */
+            color: #f9fafb;
         }
-        body.dark-mode .result-box {
-            background-color: #2a699c; /* Ciemniejszy, stonowany niebieski dla rezultatu */
-            border-color: #4d8fbd;
-            color: #ffffff; /* Biały tekst, aby był czytelny na ciemnym tle */
-        }
-        body.dark-mode .error-message {
-            background-color: #9c2e2e; /* Stonowana czerwień dla błędu */
-            border-color: #c54242;
-            color: #ffffff;
-        }
+        body.dark-mode .result-box,
         body.dark-mode .info-message {
-            background-color: #3b609c; /* Stonowany niebieski dla informacji */
-            border-color: #5d81bd;
-            color: #ffffff;
+            background-color: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
         }
-        body.dark-mode .throttle-group, body.dark-mode .energy-loss-group { /* Added energy-loss-group */
-            background-color: #313740; /* Stonowany ciemny kolor tła grupy */
-            border-color: #5d6675;
-        }
-        body.dark-mode .throttle-group h3, body.dark-mode .energy-loss-group h3 { /* Added energy-loss-group h3 */
-            color: #e2e8f0; /* Jasny tekst dla tytułu grupy */
-        }
-        body.dark-mode #themeToggle {
-            color: #e2e8f0; /* Jasna ikona w trybie ciemnym */
-        }
-        /* Updated suggestions-box for dark blue theme - slightly different shade */
-        body.dark-mode .suggestions-box {
-            background-color: #005a5a; /* Stonowany ciemny turkus */
-            border-color: #008f8f;
-            color: #ffffff;
-        }
+        body.dark-mode .error-message,
         body.dark-mode .warnings-box {
-            background-color: #9c2e2e; /* Stonowana czerwień */
-            border-color: #c54242;
-            color: #ffffff;
+            background-color: #450a0a;
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+        body.dark-mode .throttle-group, body.dark-mode .energy-loss-group {
+            background-color: #1f2937;
+            border-color: #4b5563;
+        }
+        body.dark-mode .throttle-group h3, body.dark-mode .energy-loss-group h3 {
+            color: #d1d5db;
+        }
+        body.dark-mode .suggestions-box {
+            background-color: #134e4a;
+            border-color: #14b8a6;
+            color: #ccfbf1;
+        }
+        body.dark-mode #themeToggle,
+        body.dark-mode #languageToggle {
+            color: #d1d5db;
         }
         body.dark-mode #languageToggle {
-            color: #e2e8f0;
-            background-color: #4a5568; /* Ciemniejsze tło */
+            background-color: #374151;
         }
         
         #themeToggle {
@@ -311,68 +302,21 @@
             box-shadow: none;
         }
 
-        /* Styling for the advanced info modal/panel */
-        #advancedInfoPanel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            background-color: #ffffff;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        body.dark-mode #advancedInfoPanel {
-            background-color: #2c313a;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-        #advancedInfoPanel .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #475569;
-            transition: color 0.3s ease;
-        }
-        body.dark-mode #advancedInfoPanel .close-btn {
-            color: #e2e8f0;
-        }
-        #advancedInfoPanel h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        #advancedInfoPanel p {
-            margin-bottom: 1rem;
-        }
-
         /* Dark mode styles for the new table */
         body.dark-mode #thrustToWeightTable {
-            color: #e2e8f0;
-            border-color: #4a5568;
+            color: #d1d5db;
+            border-color: #4b5563;
         }
         body.dark-mode #thrustToWeightTable th, body.dark-mode #thrustToWeightTable td {
-            border-color: #4a5568;
+            border-color: #4b5563;
         }
         body.dark-mode #thrustToWeightTable thead th {
-            background-color: #3b414d;
-            color: #e2e8f0;
+            background-color: #374151;
+            color: #f3f4f6;
         }
         body.dark-mode #thrustToWeightTable tbody tr.highlighted {
-            background-color: #6d640b; /* Darker yellow/gold highlight */
-            color: #ffffff;
+            background-color: #78350f; /* Ciemny, stonowany pomarańcz/bursztyn */
+            color: #fcd34d;
         }
     </style>
 </head>
@@ -498,7 +442,6 @@
             <p><span id="maxMotorAmpsText">Maks. obciążenie silników (całkowite):</span> <span id="maxMotorAmps">0</span> A</p>
             <p><span id="thrustToWeightRatioText">Współczynnik ciągu do masy (TWR):</span> <span id="thrustToWeightRatio">0</span></p>
             
-            <!-- Nowa tabela objaśniająca współczynnik ciągu do masy -->
             <div id="thrustToWeightTableContainer" class="mt-4"></div>
         </div>
 
@@ -518,20 +461,9 @@
             <span id="errorMessagePrefix">Wystąpił błąd:</span> <span id="errorText"></span>
         </div>
 
-        <button id="showAdvancedInfoBtn" class="w-full mt-4 py-3 px-6 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-300 transform hover:scale-105">
+        <a href="https://fpv-calc.github.io/calc/zaawansowany.html" target="_blank" id="showAdvancedInfoBtn" class="block text-center w-full mt-4 py-3 px-6 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-300 transform hover:scale-105">
             Zaawansowane
-        </button>
-    </div>
-
-    <!-- Advanced Info Panel Modal -->
-    <div id="advancedInfoPanel" class="hidden">
-        <button id="closeAdvancedInfoBtn" class="close-btn" aria-label="Zamknij">
-            <i class="fas fa-times"></i>
-        </button>
-        <h2 id="advancedInfoTitle">Informacje zaawansowane</h2>
-        <div id="advancedInfoContent">
-            <p>Tutaj znajdą się Twoje zaawansowane informacje. Czekam na Twoje dane, które mam tu wstawić.</p>
-        </div>
+        </a>
     </div>
 
     <script>
@@ -547,22 +479,18 @@
             const themeToggle = document.getElementById('themeToggle');
             const themeIcon = themeToggle.querySelector('i');
             const languageToggle = document.getElementById('languageToggle');
-            const thrustToWeightRatioSpan = document.getElementById('thrustToWeightRatio');
             const thrustToWeightTableContainer = document.getElementById('thrustToWeightTableContainer');
             const suggestionsBox = document.getElementById('suggestions');
             const suggestionList = document.getElementById('suggestionList');
             const warningsBox = document.getElementById('warnings');
             const warningList = document.getElementById('warningList');
-            const showAdvancedInfoBtn = document.getElementById('showAdvancedInfoBtn');
-            const advancedInfoPanel = document.getElementById('advancedInfoPanel');
-            const closeAdvancedInfoBtn = document.getElementById('closeAdvancedInfoBtn');
 
             // Stałe wartości
             const NUM_MOTORS = 4;
             const GRAVITY = 9.81;
             const NEWTONS_TO_GRAMS = 101.9716;
-            const WORKING_VOLTAGE = 22; // Nasze docelowe napięcie robocze
-            const LOW_EFFICIENCY_THRESHOLD = 2.2; // g/W - Próg niskiej efektywności
+            const WORKING_VOLTAGE = 22;
+            const LOW_EFFICIENCY_THRESHOLD = 2.2;
 
             // Language content
             const languages = {
@@ -610,8 +538,6 @@
                     warningsTitle: 'Uwagi:',
                     suggestionsTitle: 'Sugestie:',
                     advancedInfoButton: 'Zaawansowane',
-                    advancedInfoTitle: 'Informacje zaawansowane',
-                    advancedInfoContentPlaceholder: 'Tutaj znajdą się Twoje zaawansowane informacje. Czekam na Twoje dane, które mam tu wstawić.',
                     errorBatteryEfficiency: 'Proszę wprowadzić prawidłową wartość dla "Ile % baterii wykorzystasz podczas lotu" (%). Musi być między 1 a 100.',
                     errorThermalLoss: 'Proszę wprowadzić prawidłową wartość dla "Stałe straty cieplne w systemie" (%). Musi być między 0 a 99.9.',
                     errorMassInput: 'Proszę wprowadzić prawidłowe, nieujemne wartości dla masy drona, baterii i dodatkowego ładunku (w gramach).',
@@ -641,6 +567,7 @@
                     thrustToWeightTableTitle: 'Interpretacja współczynnika ciągu do masy',
                     twrRangeColumn: 'Zakres TWR',
                     droneTypeColumn: 'Typ Drona',
+                    underpoweredType: 'Zbyt mała moc / Long Range',
                     cinematicType: 'Cinematic',
                     freestyleType: 'Freestyle',
                     racingType: 'Racing',
@@ -690,8 +617,6 @@
                     warningsTitle: 'Warnings:',
                     suggestionsTitle: 'Suggestions:',
                     advancedInfoButton: 'Advanced',
-                    advancedInfoTitle: 'Advanced Information',
-                    advancedInfoContentPlaceholder: 'This is where your advanced information will be displayed. I am waiting for your data to put here.',
                     errorBatteryEfficiency: 'Please enter a valid value for "How much % of battery will you use during flight" (%). Must be between 1 and 100.',
                     errorThermalLoss: 'Please enter a valid value for "Constant thermal losses in the system" (%). Must be between 0 and 99.9.',
                     errorMassInput: 'Please enter valid, non-negative values for drone mass, battery mass, and additional payload mass (in grams).',
@@ -721,6 +646,7 @@
                     thrustToWeightTableTitle: 'Thrust to Weight Ratio Interpretation',
                     twrRangeColumn: 'TWR Range',
                     droneTypeColumn: 'Drone Type',
+                    underpoweredType: 'Underpowered / Long Range',
                     cinematicType: 'Cinematic',
                     freestyleType: 'Freestyle',
                     racingType: 'Racing',
@@ -770,8 +696,6 @@
                     warningsTitle: 'Advertencias:',
                     suggestionsTitle: 'Sugerencias:',
                     advancedInfoButton: 'Avanzado',
-                    advancedInfoTitle: 'Información avanzada',
-                    advancedInfoContentPlaceholder: 'Aquí se mostrará tu información avanzada. Estoy esperando tus datos para ponerlos aquí.',
                     errorBatteryEfficiency: 'Por favor, introduce un valor válido para "Porcentaje de batería que usarás durante el vuelo" (%). Debe estar entre 1 y 100.',
                     errorThermalLoss: 'Por favor, introduce un valor válido para "Pérdidas térmicas constantes en el sistema" (%). Debe estar entre 0 y 99.9.',
                     errorMassInput: 'Por favor, introduce valores válidos y no negativos para la masa del dron, la batería y la carga adicional (en gramos).',
@@ -801,6 +725,7 @@
                     thrustToWeightTableTitle: 'Thrust to Weight Ratio Interpretation',
                     twrRangeColumn: 'TWR Range',
                     droneTypeColumn: 'Drone Type',
+                    underpoweredType: 'Poca potencia / Largo Alcance',
                     cinematicType: 'Cinematic',
                     freestyleType: 'Freestyle',
                     racingType: 'Racing',
@@ -808,32 +733,31 @@
                 }
             };
 
-            let currentLanguage = localStorage.getItem('language') || 'pl'; // Default to Polish
+            let currentLanguage = localStorage.getItem('language') || 'pl';
 
-            // Elementy wejściowe (do dynamicznej aktualizacji placeholderów)
-            const batteryCapacityWhInput = document.getElementById('batteryCapacityWh');
-            const batteryCapacityMilliAhInput = document.getElementById('batteryCapacityMilliAh');
-            const batteryCRatingInput = document.getElementById('batteryCRating');
-            const batteryMassGInput = document.getElementById('batteryMassG');
-            const droneMassGInput = document.getElementById('droneMassG');
-            const additionalPayloadMassGInput = document.getElementById('additionalPayloadMassG');
-            const batteryEfficiencyPercentInput = document.getElementById('batteryEfficiencyPercent');
-            const measurementVoltageInput = document.getElementById('measurementVoltage');
-            const escPowerAmpsInput = document.getElementById('escPowerAmps');
-            const thermalLossPercentInput = document.getElementById('thermalLossPercentInput');
-            const thrust30GInput = document.getElementById('thrust30G');
-            const power30WInput = document.getElementById('power30W');
-            const thrust50GInput = document.getElementById('thrust50G');
-            const power50WInput = document.getElementById('power50W');
-            const thrust70GInput = document.getElementById('thrust70G');
-            const power70WInput = document.getElementById('power70W');
-            const thrust100GInput = document.getElementById('thrust100G');
-            const power100WInput = document.getElementById('power100W');
+            const inputElements = [
+                document.getElementById('batteryCapacityWh'),
+                document.getElementById('batteryCapacityMilliAh'),
+                document.getElementById('batteryCRating'),
+                document.getElementById('batteryMassG'),
+                document.getElementById('droneMassG'),
+                document.getElementById('additionalPayloadMassG'),
+                document.getElementById('batteryEfficiencyPercent'),
+                document.getElementById('measurementVoltage'),
+                document.getElementById('escPowerAmps'),
+                document.getElementById('thermalLossPercentInput'),
+                document.getElementById('thrust30G'),
+                document.getElementById('power30W'),
+                document.getElementById('thrust50G'),
+                document.getElementById('power50W'),
+                document.getElementById('thrust70G'),
+                document.getElementById('power70W'),
+                document.getElementById('thrust100G'),
+                document.getElementById('power100W')
+            ];
 
-            // Funkcja do aktualizacji tekstu na podstawie języka
             function updateTexts() {
                 const lang = languages[currentLanguage];
-
                 document.getElementById('appTitle').textContent = lang.appTitle;
                 document.getElementById('calculatorTitle').textContent = lang.calculatorTitle;
                 document.getElementById('batteryCapacityWhLabel').textContent = lang.batteryCapacityWhLabel;
@@ -876,32 +800,15 @@
                 document.getElementById('warningsTitle').textContent = lang.warningsTitle;
                 document.getElementById('suggestionsTitle').textContent = lang.suggestionsTitle;
                 document.getElementById('showAdvancedInfoBtn').textContent = lang.advancedInfoButton;
-                document.getElementById('advancedInfoTitle').textContent = lang.advancedInfoTitle;
-                document.getElementById('advancedInfoContent').textContent = lang.advancedInfoContentPlaceholder;
 
-
-                // Update placeholders as well
-                batteryCapacityWhInput.placeholder = currentLanguage === 'pl' ? 'Np. 72' : (currentLanguage === 'en' ? 'e.g. 72' : 'ej. 72');
-                batteryCapacityMilliAhInput.placeholder = currentLanguage === 'pl' ? 'Np. 5000' : (currentLanguage === 'en' ? 'e.g. 5000' : 'ej. 5000');
-                batteryCRatingInput.placeholder = currentLanguage === 'pl' ? 'Np. 30' : (currentLanguage === 'en' ? 'e.g. 30' : 'ej. 30');
-                batteryMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 700' : (currentLanguage === 'en' ? 'e.g. 700' : 'ej. 700');
-                droneMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 1500' : (currentLanguage === 'en' ? 'e.g. 1500' : 'ej. 1500');
-                additionalPayloadMassGInput.placeholder = currentLanguage === 'pl' ? 'Np. 500' : (currentLanguage === 'en' ? 'e.g. 500' : 'ej. 500');
-                escPowerAmpsInput.placeholder = currentLanguage === 'pl' ? 'Np. 40' : (currentLanguage === 'en' ? 'e.g. 40' : 'ej. 40');
-                batteryEfficiencyPercentInput.placeholder = currentLanguage === 'pl' ? 'Np. 80' : (currentLanguage === 'en' ? 'e.g. 80' : 'ej. 80');
-                thermalLossPercentInput.placeholder = currentLanguage === 'pl' ? 'Np. 22' : (currentLanguage === 'en' ? 'e.g. 22' : 'ej. 22');
-                measurementVoltageInput.placeholder = currentLanguage === 'pl' ? 'Np. 24' : (currentLanguage === 'en' ? 'e.g. 24' : 'ej. 24');
-                thrust30GInput.placeholder = currentLanguage === 'pl' ? 'Np. 500' : (currentLanguage === 'en' ? 'e.g. 500' : 'ej. 500');
-                power30WInput.placeholder = currentLanguage === 'pl' ? 'Np. 50' : (currentLanguage === 'en' ? 'e.g. 50' : 'ej. 50');
-                thrust50GInput.placeholder = currentLanguage === 'pl' ? 'Np. 1000' : (currentLanguage === 'en' ? 'e.g. 1000' : 'ej. 1000');
-                power50WInput.placeholder = currentLanguage === 'pl' ? 'Np. 120' : (currentLanguage === 'en' ? 'e.g. 120' : 'ej. 120');
-                thrust70GInput.placeholder = currentLanguage === 'pl' ? 'Np. 1500' : (currentLanguage === 'en' ? 'e.g. 1500' : 'ej. 1500');
-                power70WInput.placeholder = currentLanguage === 'pl' ? 'Np. 200' : (currentLanguage === 'en' ? 'e.g. 200' : 'ej. 200');
-                thrust100GInput.placeholder = currentLanguage === 'pl' ? 'Np. 2500' : (currentLanguage === 'en' ? 'e.g. 2500' : 'ej. 2500');
-                power100WInput.placeholder = currentLanguage === 'pl' ? 'Np. 400' : (currentLanguage === 'en' ? 'e.g. 400' : 'ej. 400');
+                inputElements.forEach(input => {
+                    const placeholderKey = `${input.id.replace('Input', '')}Placeholder`;
+                    if (lang[placeholderKey]) {
+                        input.placeholder = lang[placeholderKey];
+                    }
+                });
             }
 
-            // Funkcja do stosowania motywu (niezmieniona)
             function applyTheme(theme) {
                 if (theme === 'dark') {
                     document.body.classList.add('dark-mode');
@@ -915,61 +822,26 @@
                 localStorage.setItem('theme', theme);
             }
 
-            // Sprawdź zapisany motyw przy ładowaniu strony
             const savedTheme = localStorage.getItem('theme') || 'light';
             applyTheme(savedTheme);
 
-            // Obsługa przełączania motywu
             themeToggle.addEventListener('click', () => {
                 const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 applyTheme(newTheme);
             });
 
-            // Obsługa przełączania języka
             languageToggle.addEventListener('click', () => {
                 const languagesOrder = ['pl', 'en', 'es'];
                 let currentIndex = languagesOrder.indexOf(currentLanguage);
                 let nextIndex = (currentIndex + 1) % languagesOrder.length;
                 currentLanguage = languagesOrder[nextIndex];
                 localStorage.setItem('language', currentLanguage);
-                languageToggle.textContent = languagesOrder.map(l => l.toUpperCase()).join('/'); // Update button text to PL/EN/ES
-                updateTexts(); // Update all static texts
-                calculateFlightTime(); // Recalculate to update dynamic messages
+                languageToggle.textContent = languagesOrder.map(l => l.toUpperCase()).join('/');
+                updateTexts();
+                if(resultDiv.classList.contains('hidden') === false) calculateFlightTime();
             });
 
-            // Obsługa przycisku zaawansowanych informacji
-            showAdvancedInfoBtn.addEventListener('click', () => {
-                advancedInfoPanel.classList.remove('hidden');
-            });
-            closeAdvancedInfoBtn.addEventListener('click', () => {
-                advancedInfoPanel.classList.add('hidden');
-            });
-
-
-            // Lista wszystkich pól wejściowych, które mają być zapamiętywane
-            const inputElements = [
-                batteryCapacityWhInput,
-                batteryCapacityMilliAhInput,
-                batteryCRatingInput,
-                batteryMassGInput,
-                droneMassGInput,
-                additionalPayloadMassGInput,
-                batteryEfficiencyPercentInput,
-                measurementVoltageInput,
-                escPowerAmpsInput,
-                thermalLossPercentInput,
-                thrust30GInput,
-                power30WInput,
-                thrust50GInput,
-                power50WInput,
-                thrust70GInput,
-                power70WInput,
-                thrust100GInput,
-                power100WInput
-            ];
-
-            // Funkcja do ładowania danych z localStorage
             function loadInputs() {
                 inputElements.forEach(input => {
                     const savedValue = localStorage.getItem(input.id);
@@ -979,27 +851,20 @@
                 });
             }
 
-            // Funkcja do zapisywania danych do localStorage
             function saveInput(event) {
                 localStorage.setItem(event.target.id, event.target.value);
             }
 
-            // Dodaj event listener do każdego pola wejściowego
             inputElements.forEach(input => {
                 input.addEventListener('input', saveInput);
             });
 
-            // Załaduj dane przy starcie aplikacji i zaktualizuj teksty
             loadInputs();
-            updateTexts(); // Initial text update based on saved language
-            languageToggle.textContent = ['pl', 'en', 'es'].map(l => l.toUpperCase()).join('/'); // Set initial button text
+            updateTexts();
+            languageToggle.textContent = ['pl', 'en', 'es'].map(l => l.toUpperCase()).join('/');
 
             calculateBtn.addEventListener('click', calculateFlightTime);
 
-            /**
-             * Funkcja wyświetlająca komunikat o błędzie.
-             * @param {string} messageKey - Klucz wiadomości błędu z obiektu językowego.
-             */
             function displayError(messageKey) {
                 errorMessageDiv.classList.remove('hidden');
                 resultDiv.classList.add('hidden');
@@ -1010,41 +875,25 @@
                 errorTextSpan.textContent = languages[currentLanguage][messageKey];
             }
 
-            /**
-             * Funkcja interpolująca (lub ekstrapolująca) moc na podstawie ciągu.
-             * Przyjmuje docelowy ciąg i posortowane punkty danych (ciąg, moc).
-             * @param {number} targetThrust - Docelowy ciąg (w gramach), dla którego szukamy mocy.
-             * @param {Array<Object>} dataPoints - Tablica obiektów { thrust: number, power: number }, posortowana wg ciągu.
-             * @returns {number} Obliczona moc (w Watach).
-             */
             function interpolatePower(targetThrust, dataPoints) {
-                // Ensure dataPoints are sorted by thrust
                 dataPoints.sort((a, b) => a.thrust - b.thrust);
-
                 let P_hover;
-
-                // If targetThrust is outside the range, extrapolate
                 if (targetThrust <= dataPoints[0].thrust) {
                     const x1 = dataPoints[0].thrust;
                     const y1 = dataPoints[0].power;
                     const x2 = dataPoints[1].thrust;
                     const y2 = dataPoints[1].power;
                     P_hover = y1 + (targetThrust - x1) * (y2 - y1) / (x2 - x1);
-                }
-                // If targetThrust is above the highest point, extrapolate using last two points
-                else if (targetThrust >= dataPoints[dataPoints.length - 1].thrust) {
+                } else if (targetThrust >= dataPoints[dataPoints.length - 1].thrust) {
                     const x1 = dataPoints[dataPoints.length - 2].thrust;
                     const y1 = dataPoints[dataPoints.length - 2].power;
                     const x2 = dataPoints[dataPoints.length - 1].thrust;
                     const y2 = dataPoints[dataPoints.length - 1].power;
                     P_hover = y1 + (targetThrust - x1) * (y2 - y1) / (x2 - x1);
-                }
-                // Interpolate within the range
-                else {
+                } else {
                     for (let i = 0; i < dataPoints.length - 1; i++) {
                         const p1 = dataPoints[i];
                         const p2 = dataPoints[i + 1];
-
                         if (targetThrust >= p1.thrust && targetThrust <= p2.thrust) {
                             const x1 = p1.thrust;
                             const y1 = p1.power;
@@ -1055,81 +904,51 @@
                         }
                     }
                 }
-                return Math.max(0, P_hover); // Ensure power is not negative
+                return Math.max(0, P_hover);
             }
 
-            /**
-             * Korekta mocy na podstawie różnicy napięć (model fizyczny)
-             * @param {number} power - Moc wyjściowa
-             * @param {number} sourceVoltage - Napięcie źródłowe
-             * @param {number} targetVoltage - Docelowe napięcie
-             * @param {number} thrust - Wymagany ciąg (dla skalowania)
-             * @returns {number} Skorygowana moc
-             */
             function correctPowerForVoltage(power, sourceVoltage, targetVoltage, thrust) {
-                // Wykładnik 1.5 to kompromis między teorią (3.0) a praktyką (1.0)
                 const baseCorrection = Math.pow(targetVoltage / sourceVoltage, 1.5);
-
-                // Dodatkowa korekta dla wysokich ciągów (>1000g)
-                // Ten współczynnik (0.95) jest heurystyczny i może wymagać dostosowania
                 const thrustCorrection = thrust > 1000 ? 0.95 : 1.0;
-
                 return power * baseCorrection * thrustCorrection;
             }
 
             function calculateFlightTime() {
-                // Ukryj poprzednie wyniki i błędy
                 resultDiv.classList.add('hidden');
                 errorMessageDiv.classList.add('hidden');
-                suggestionsBox.classList.add('hidden'); // Hide suggestions initially
-                warningsBox.classList.add('hidden'); // Hide warnings initially
-                suggestionList.innerHTML = ''; // Clear previous suggestions
-                warningList.innerHTML = ''; // Clear previous warnings
+                suggestionsBox.classList.add('hidden');
+                warningsBox.classList.add('hidden');
+                suggestionList.innerHTML = '';
+                warningList.innerHTML = '';
                 errorTextSpan.textContent = '';
-                thrustToWeightTableContainer.innerHTML = ''; // Clear the table content
+                thrustToWeightTableContainer.innerHTML = '';
 
                 try {
-                    // Pobierz wartości z pól wejściowych
-                    const rawBatteryCapacityWh = parseFloat(batteryCapacityWhInput.value);
-                    const rawBatteryCapacityMilliAh = parseFloat(batteryCapacityMilliAhInput.value);
-                    const batteryCRating = parseFloat(batteryCRatingInput.value); // Get C-rating
-                    const batteryEfficiencyPercent = parseFloat(batteryEfficiencyPercentInput.value);
-                    const droneMassG = parseFloat(droneMassGInput.value);
-                    const batteryMassG = parseFloat(batteryMassGInput.value);
-                    const additionalPayloadMassG = parseFloat(additionalPayloadMassGInput.value);
-                    const measurementVoltage = parseFloat(measurementVoltageInput.value);
-                    const thermalLossPercent = parseFloat(thermalLossPercentInput.value);
-                    const escPowerAmps = parseFloat(escPowerAmpsInput.value);
+                    const rawBatteryCapacityWh = parseFloat(document.getElementById('batteryCapacityWh').value);
+                    const rawBatteryCapacityMilliAh = parseFloat(document.getElementById('batteryCapacityMilliAh').value);
+                    const batteryCRating = parseFloat(document.getElementById('batteryCRating').value);
+                    const batteryEfficiencyPercent = parseFloat(document.getElementById('batteryEfficiencyPercent').value);
+                    const droneMassG = parseFloat(document.getElementById('droneMassG').value);
+                    const batteryMassG = parseFloat(document.getElementById('batteryMassG').value);
+                    const additionalPayloadMassG = parseFloat(document.getElementById('additionalPayloadMassG').value);
+                    const measurementVoltage = parseFloat(document.getElementById('measurementVoltage').value);
+                    const thermalLossPercent = parseFloat(document.getElementById('thermalLossPercentInput').value);
+                    const escPowerAmps = parseFloat(document.getElementById('escPowerAmps').value);
 
-                    // Pobierz wartości specyfikacji silnika
-                    const thrust30G = parseFloat(thrust30GInput.value);
-                    const power30W = parseFloat(power30WInput.value);
-                    const thrust50G = parseFloat(thrust50GInput.value);
-                    const power50W = parseFloat(power50WInput.value);
-                    const thrust70G = parseFloat(thrust70GInput.value);
-                    const power70W = parseFloat(power70WInput.value);
-                    const thrust100G = parseFloat(thrust100GInput.value);
-                    const power100W = parseFloat(power100WInput.value);
+                    const thrust30G = parseFloat(document.getElementById('thrust30G').value);
+                    const power30W = parseFloat(document.getElementById('power30W').value);
+                    const thrust50G = parseFloat(document.getElementById('thrust50G').value);
+                    const power50W = parseFloat(document.getElementById('power50W').value);
+                    const thrust70G = parseFloat(document.getElementById('thrust70G').value);
+                    const power70W = parseFloat(document.getElementById('power70W').value);
+                    const thrust100G = parseFloat(document.getElementById('thrust100G').value);
+                    const power100W = parseFloat(document.getElementById('power100W').value);
 
-                    // Walidacja danych wejściowych
-                    if (isNaN(batteryEfficiencyPercent) || batteryEfficiencyPercent <= 0 || batteryEfficiencyPercent > 100) {
-                        displayError('errorBatteryEfficiency');
-                        return;
-                    }
-                    if (isNaN(thermalLossPercent) || thermalLossPercent < 0 || thermalLossPercent >= 100) {
-                        displayError('errorThermalLoss');
-                        return;
-                    }
-                    if (isNaN(droneMassG) || droneMassG < 0 || isNaN(batteryMassG) || batteryMassG < 0 || isNaN(additionalPayloadMassG) || additionalPayloadMassG < 0) {
-                        displayError('errorMassInput');
-                        return;
-                    }
-                    if (isNaN(measurementVoltage) || measurementVoltage <= 0) {
-                        displayError('errorMeasurementVoltage');
-                        return;
-                    }
+                    if (isNaN(batteryEfficiencyPercent) || batteryEfficiencyPercent <= 0 || batteryEfficiencyPercent > 100) return displayError('errorBatteryEfficiency');
+                    if (isNaN(thermalLossPercent) || thermalLossPercent < 0 || thermalLossPercent >= 100) return displayError('errorThermalLoss');
+                    if (isNaN(droneMassG) || droneMassG < 0 || isNaN(batteryMassG) || batteryMassG < 0 || isNaN(additionalPayloadMassG) || additionalPayloadMassG < 0) return displayError('errorMassInput');
+                    if (isNaN(measurementVoltage) || measurementVoltage <= 0) return displayError('errorMeasurementVoltage');
 
-                    // Walidacja user motor data
                     const userMotorData = [
                         { thrust: thrust30G, power: power30W },
                         { thrust: thrust50G, power: power50W },
@@ -1138,240 +957,121 @@
                     ];
 
                     for (const dataPoint of userMotorData) {
-                        if (isNaN(dataPoint.thrust) || dataPoint.thrust <= 0 || isNaN(dataPoint.power) || dataPoint.power <= 0) {
-                            displayError('errorMotorSpecValues');
-                            return;
-                        }
+                        if (isNaN(dataPoint.thrust) || dataPoint.thrust <= 0 || isNaN(dataPoint.power) || dataPoint.power <= 0) return displayError('errorMotorSpecValues');
                     }
+                    if (userMotorData[0].thrust >= userMotorData[1].thrust || userMotorData[1].thrust >= userMotorData[2].thrust || userMotorData[2].thrust >= userMotorData[3].thrust) return displayError('errorThrustIncrease');
+                    if (userMotorData[0].power >= userMotorData[1].power || userMotorData[1].power >= userMotorData[2].power || userMotorData[2].power >= userMotorData[3].power) return displayError('errorPowerIncrease');
 
-                    // Walidacja, czy wartości ciągu i mocy rosną dla danych użytkownika
-                    if (userMotorData[0].thrust >= userMotorData[1].thrust || userMotorData[1].thrust >= userMotorData[2].thrust || userMotorData[2].thrust >= userMotorData[3].thrust) {
-                        displayError('errorThrustIncrease');
-                        return;
-                    }
-                    if (userMotorData[0].power >= userMotorData[1].power || userMotorData[1].power >= userMotorData[2].power || userMotorData[2].power >= userMotorData[3].power) {
-                        displayError('errorPowerIncrease');
-                        return;
-                    }
-
-                    // Logika dla pojemności baterii (Wh)
                     let batteryCapacityWh;
                     if (!isNaN(rawBatteryCapacityWh) && rawBatteryCapacityWh > 0) {
                         batteryCapacityWh = rawBatteryCapacityWh;
                     } else if (!isNaN(rawBatteryCapacityMilliAh) && rawBatteryCapacityMilliAh > 0) {
                         batteryCapacityWh = (rawBatteryCapacityMilliAh / 1000) * WORKING_VOLTAGE;
                     } else {
-                        displayError('errorBatteryCapacity');
-                        return;
+                        return displayError('errorBatteryCapacity');
                     }
 
-                    // Obliczenia całkowitej masy drona (konwersja gramów na kilogramy dla obliczeń fizycznych)
                     const totalMassG = droneMassG + batteryMassG + additionalPayloadMassG;
                     const totalMassKg = totalMassG / 1000;
-
-                    // Obliczanie całkowitego ciągu potrzebnego do zawisu (N)
-                    const totalThrustNeededForHoverN = totalMassKg * GRAVITY * 2.5; // Factor 2.5 for typical FPV flight
+                    const totalThrustNeededForHoverN = totalMassKg * GRAVITY * 2.5;
                     const thrustPerMotorNeededForHoverN = totalThrustNeededForHoverN / NUM_MOTORS;
                     const thrustPerMotorNeededForHoverG = thrustPerMotorNeededForHoverN * NEWTONS_TO_GRAMS;
 
-                    // Sprawdzenie, czy wymagany ciąg w zawisie przekracza maksymalny ciąg silnika użytkownika
-                    let currentWarnings = []; // Initialize here to use in subsequent checks
+                    let currentWarnings = [];
                     if (thrustPerMotorNeededForHoverG > userMotorData[userMotorData.length - 1].thrust) {
                         currentWarnings.push(languages[currentLanguage].warningThrustExceeded(thrustPerMotorNeededForHoverG, userMotorData[userMotorData.length - 1].thrust));
                     }
 
-                    // Oblicz moc na silnik potrzebną do zawisu na podstawie DANYCH UŻYTKOWNIKA i NAPIĘCIA POMIAROWEGO
                     let powerPerMotorAtHoverW = interpolatePower(thrustPerMotorNeededForHoverG, userMotorData);
-
-                    // NOWA KOREKCJA MOCY - model fizyczny (przywrócony)
                     let voltageCorrectionFactorValue = 1;
                     let adjustedPowerPerMotorAtHoverW = powerPerMotorAtHoverW;
 
                     if (measurementVoltage !== WORKING_VOLTAGE) {
                         voltageCorrectionFactorValue = Math.pow(WORKING_VOLTAGE / measurementVoltage, 1.5);
-                        adjustedPowerPerMotorAtHoverW = correctPowerForVoltage(
-                            powerPerMotorAtHoverW,
-                            measurementVoltage,
-                            WORKING_VOLTAGE,
-                            thrustPerMotorNeededForHoverG
-                        );
+                        adjustedPowerPerMotorAtHoverW = correctPowerForVoltage(powerPerMotorAtHoverW, measurementVoltage, WORKING_VOLTAGE, thrustPerMotorNeededForHoverG);
                     }
 
-                    // Sprawdź, czy obliczona moc jest prawidłowa
-                    if (isNaN(adjustedPowerPerMotorAtHoverW) || adjustedPowerPerMotorAtHoverW <= 0) {
-                        displayError('errorAdjustedPower');
-                        return;
-                    }
+                    if (isNaN(adjustedPowerPerMotorAtHoverW) || adjustedPowerPerMotorAtHoverW <= 0) return displayError('errorAdjustedPower');
 
-                    // Całkowite zużycie energii w zawisie (skorygowane o napięcie i straty cieplne)
                     let totalPowerConsumptionAtHoverW = adjustedPowerPerMotorAtHoverW * NUM_MOTORS;
-
-                    // Zastosowanie stałych strat cieplnych
-                    if (thermalLossPercent >= 100) {
-                        displayError('errorThermalLossTooHigh');
-                        return;
-                    }
+                    if (thermalLossPercent >= 100) return displayError('errorThermalLossTooHigh');
                     totalPowerConsumptionAtHoverW = totalPowerConsumptionAtHoverW / (1 - thermalLossPercent / 100);
+                    if (totalPowerConsumptionAtHoverW === 0) return displayError('errorZeroPowerConsumption');
 
-                    if (totalPowerConsumptionAtHoverW === 0) {
-                        displayError('errorZeroPowerConsumption');
-                        return;
-                    }
-
-                    // Oblicz efektywną energię baterii
                     const batteryEnergyWhEffective = batteryCapacityWh * (batteryEfficiencyPercent / 100);
-
-                    // Czas lotu w godzinach
                     const flightTimeHours = batteryEnergyWhEffective / totalPowerConsumptionAtHoverW;
-                    // Czas lotu w minutach
                     const flightTimeMinutes = flightTimeHours * 60;
 
-                    // Obliczenia dla sugestii i podsumowania
                     const maxBatteryAmps = (rawBatteryCapacityMilliAh / 1000) * batteryCRating;
                     const totalEscAmps = escPowerAmps * NUM_MOTORS;
-                    const maxPowerPerMotorAt100W = parseFloat(power100WInput.value);
+                    const maxPowerPerMotorAt100W = parseFloat(document.getElementById('power100W').value);
                     const totalMaxMotorPowerW = maxPowerPerMotorAt100W * NUM_MOTORS;
-                    const totalMaxMotorAmps = totalMaxMotorPowerW / WORKING_VOLTAGE; // Max current motors can draw at 100% throttle
-
-                    // Współczynnik ciągu do masy (using max thrust for ratio)
+                    const totalMaxMotorAmps = totalMaxMotorPowerW / WORKING_VOLTAGE;
                     const thrustToWeightRatio = (userMotorData[userMotorData.length - 1].thrust * NUM_MOTORS) / totalMassG;
 
-                    // Wyświetl wyniki
                     flightTimeMinutesSpan.textContent = flightTimeMinutes.toFixed(2);
                     requiredThrustGSpan.textContent = thrustPerMotorNeededForHoverG.toFixed(2);
                     requiredPowerWSpan.textContent = adjustedPowerPerMotorAtHoverW.toFixed(2);
                     voltageCorrectionFactorSpan.textContent = voltageCorrectionFactorValue.toFixed(4);
                     document.getElementById('maxBatteryAmps').textContent = maxBatteryAmps.toFixed(2);
-                    document.getElementById('maxEscAmps').textContent = totalEscAmps.toFixed(2); // Corrected this line
+                    document.getElementById('maxEscAmps').textContent = totalEscAmps.toFixed(2);
                     document.getElementById('maxMotorAmps').textContent = totalMaxMotorAmps.toFixed(2);
                     document.getElementById('thrustToWeightRatio').textContent = thrustToWeightRatio.toFixed(2);
 
-
                     resultDiv.classList.remove('hidden');
-                    suggestionsBox.classList.remove('hidden'); // Show suggestions box
-                    warningsBox.classList.remove('hidden'); // Show warnings box
-                    suggestionList.innerHTML = ''; // Clear previous suggestions
-                    warningList.innerHTML = ''; // Clear previous warnings
-                    thrustToWeightTableContainer.innerHTML = ''; // Clear the table content
+                    suggestionsBox.classList.remove('hidden');
+                    warningsBox.classList.remove('hidden');
 
-                    // Generowanie tabelki interpretującej współczynnik ciągu do masy
                     const twrCategories = [
-                        { min: 0, max: 4, type: languages[currentLanguage].cinematicType },
+                        { min: 0, max: 2, type: languages[currentLanguage].underpoweredType },
+                        { min: 2, max: 4, type: languages[currentLanguage].cinematicType },
                         { min: 4, max: 7, type: languages[currentLanguage].freestyleType },
                         { min: 7, max: Infinity, type: languages[currentLanguage].racingType }
                     ];
 
-                    let tableHtml = `
-                        <table id="thrustToWeightTable">
-                            <thead>
-                                <tr>
-                                    <th>${languages[currentLanguage].twrRangeColumn}</th>
-                                    <th>${languages[currentLanguage].droneTypeColumn}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-
+                    let tableHtml = `<table id="thrustToWeightTable"><thead><tr><th>${languages[currentLanguage].twrRangeColumn}</th><th>${languages[currentLanguage].droneTypeColumn}</th></tr></thead><tbody>`;
                     twrCategories.forEach(category => {
-                        const isHighlighted = (thrustToWeightRatio >= category.min && thrustToWeightRatio < category.max) || (category.max === Infinity && thrustToWeightRatio >= category.max);
-                        const rowClass = isHighlighted ? 'highlighted' : '';
-                        let rangeText = '';
-                        if (category.max === Infinity) {
-                            rangeText = `> ${category.min}`;
-                        } else {
-                            rangeText = `${category.min} - ${category.max}`;
-                        }
-                        
-                        tableHtml += `
-                            <tr class="${rowClass}">
-                                <td>${rangeText}</td>
-                                <td>${category.type}</td>
-                            </tr>
-                        `;
+                        const isHighlighted = (thrustToWeightRatio >= category.min && thrustToWeightRatio < category.max);
+                        const rangeText = category.max === Infinity ? `> ${category.min}` : (category.min === 0 ? `< ${category.max}` : `${category.min} - ${category.max}`);
+                        tableHtml += `<tr class="${isHighlighted ? 'highlighted' : ''}"><td>${rangeText}</td><td>${category.type}</td></tr>`;
                     });
-
-                    tableHtml += `
-                            </tbody>
-                        </table>
-                    `;
+                    tableHtml += `</tbody></table>`;
                     thrustToWeightTableContainer.innerHTML = tableHtml;
 
-
-                    // Generowanie sugestii i uwag
                     let currentSuggestions = [];
-                    // currentWarnings already initialized above
+                    if (totalMaxMotorAmps > totalEscAmps) currentWarnings.push(languages[currentLanguage].warningEscTooLow(totalMaxMotorAmps, totalEscAmps));
+                    const requiredBatteryAmpsForMotorsWithBuffer = totalMaxMotorAmps * 1.20;
+                    if (maxBatteryAmps < requiredBatteryAmpsForMotorsWithBuffer) currentWarnings.push(languages[currentLanguage].warningBatteryTooLow(maxBatteryAmps, requiredBatteryAmpsForMotorsWithBuffer));
 
-                    // --- Uwagi (krytyczne problemy) ---
-
-                    // 1. Silniki nie mogą mieć więcej A niż ESC.
-                    if (totalMaxMotorAmps > totalEscAmps) {
-                        currentWarnings.push(languages[currentLanguage].warningEscTooLow(totalMaxMotorAmps, totalEscAmps));
-                    }
-
-                    // 2. Bateria nie da za mało A dla silników (wymagany bufor 20%).
-                    const requiredBatteryAmpsForMotorsWithBuffer = totalMaxMotorAmps * 1.20; // 20% bufor już jest tutaj
-                    if (maxBatteryAmps < requiredBatteryAmpsForMotorsWithBuffer) {
-                        currentWarnings.push(languages[currentLanguage].warningBatteryTooLow(maxBatteryAmps, requiredBatteryAmpsForMotorsWithBuffer));
-                    }
-
-                    // 3. Sprawdzanie efektywności silników (g/W)
                     const checkEfficiency = (thrust, power, throttlePercent) => {
                         if (power > 0) {
                             const efficiency = thrust / power;
-                            if (efficiency < LOW_EFFICIENCY_THRESHOLD) {
-                                currentWarnings.push(languages[currentLanguage].warningLowEfficiency(throttlePercent, efficiency, LOW_EFFICIENCY_THRESHOLD));
-                            }
+                            if (efficiency < LOW_EFFICIENCY_THRESHOLD) currentWarnings.push(languages[currentLanguage].warningLowEfficiency(throttlePercent, efficiency, LOW_EFFICIENCY_THRESHOLD));
                         }
                     };
-
                     checkEfficiency(thrust30G, power30W, 30);
                     checkEfficiency(thrust50G, power50W, 50);
                     checkEfficiency(thrust70G, power70W, 70);
 
-
-                    // --- Sugestie (optymalizacja/informacje) ---
-
-                    // Obliczanie limitu prądowego komponentów (ESC i Baterii)
                     const componentMaxAmpsConsideringBatteryBuffer = Math.min(totalEscAmps, maxBatteryAmps);
-
-                    // Sugestia: Silniki pobierają o 35% mniej A niż komponenty (ESC i Bateria) mogą dać
                     if (totalMaxMotorAmps < componentMaxAmpsConsideringBatteryBuffer * 0.65) {
                         const targetMotorAmps = componentMaxAmpsConsideringBatteryBuffer * 0.95;
                         const targetMotorAmpsPerMotor = targetMotorAmps / NUM_MOTORS;
                         currentSuggestions.push(languages[currentLanguage].suggestionUnderpoweredMotors(totalMaxMotorAmps, componentMaxAmpsConsideringBatteryBuffer, targetMotorAmps, targetMotorAmpsPerMotor));
                     }
-
-                    // Sugestie dotyczące eliminacji ostrzeżeń (BEZ DODATKOWEGO 10%)
-                    if (totalMaxMotorAmps > totalEscAmps) {
-                        const suggestedEscAmps = totalMaxMotorAmps.toFixed(2);
-                        currentSuggestions.push(languages[currentLanguage].suggestionIncreaseEsc(suggestedEscAmps));
-                    }
-
+                    if (totalMaxMotorAmps > totalEscAmps) currentSuggestions.push(languages[currentLanguage].suggestionIncreaseEsc(totalMaxMotorAmps.toFixed(2)));
                     if (maxBatteryAmps < requiredBatteryAmpsForMotorsWithBuffer) {
                         const suggestedBatteryAmps = requiredBatteryAmpsForMotorsWithBuffer.toFixed(2);
-                        const currentMilliAh = parseFloat(batteryCapacityMilliAhInput.value);
-                        const currentCRating = parseFloat(batteryCRatingInput.value);
-
+                        const currentMilliAh = parseFloat(document.getElementById('batteryCapacityMilliAh').value);
+                        const currentCRating = parseFloat(document.getElementById('batteryCRating').value);
                         let suggestedMilliAh = "N/A";
                         let suggestedCRating = "N/A";
-
-                        if (!isNaN(currentCRating) && currentCRating > 0) {
-                            suggestedMilliAh = (suggestedBatteryAmps / currentCRating * 1000).toFixed(0);
-                        }
-                        if (!isNaN(currentMilliAh) && currentMilliAh > 0) {
-                            suggestedCRating = (suggestedBatteryAmps / (currentMilliAh / 1000)).toFixed(1);
-                        }
-
+                        if (!isNaN(currentCRating) && currentCRating > 0) suggestedMilliAh = (suggestedBatteryAmps / currentCRating * 1000).toFixed(0);
+                        if (!isNaN(currentMilliAh) && currentMilliAh > 0) suggestedCRating = (suggestedBatteryAmps / (currentMilliAh / 1000)).toFixed(1);
                         currentSuggestions.push(languages[currentLanguage].suggestionIncreaseBattery(suggestedBatteryAmps, suggestedMilliAh, suggestedCRating));
                     }
+                    if (currentWarnings.some(warning => warning.includes('Efektywność silnika'))) currentSuggestions.push(languages[currentLanguage].suggestionImproveEfficiency);
 
-                    // Sugestia dotycząca niskiej efektywności
-                    if (currentWarnings.some(warning => warning.includes(languages[currentLanguage].warningLowEfficiency('', 0, LOW_EFFICIENCY_THRESHOLD).substring(0, 20)))) { // Check for part of the efficiency warning string
-                        currentSuggestions.push(languages[currentLanguage].suggestionImproveEfficiency);
-                    }
-
-
-                    // Wyświetl sugestie
                     if (currentSuggestions.length > 0) {
                         currentSuggestions.forEach(sugg => {
                             const li = document.createElement('li');
@@ -1384,7 +1084,6 @@
                         suggestionList.appendChild(li);
                     }
 
-                    // Wyświetl uwagi (ostrzeżenia)
                     if (currentWarnings.length > 0) {
                         currentWarnings.forEach(warn => {
                             const li = document.createElement('li');
@@ -1397,21 +1096,10 @@
                         warningList.appendChild(li);
                     }
 
-
                 } catch (error) {
-                    // Obsługa ogólnych błędów
                     displayError('unexpectedError');
                     console.error("Błąd obliczeń:", error);
                 }
-            }
-
-            /**
-             * Wyświetla komunikat o błędzie w dedykowanym polu.
-             * @param {string} messageKey - Klucz wiadomości błędu z obiektu językowego.
-             */
-            function displayError(messageKey) {
-                errorTextSpan.textContent = languages[currentLanguage][messageKey];
-                errorMessageDiv.classList.remove('hidden');
             }
         });
     </script>
