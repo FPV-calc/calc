@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zaawansowany Kalkulator</title>
+    <title>Zaawansowany Kalkulator Przewody</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
@@ -18,31 +19,23 @@
             background-color: #1a202c;
             color: #e2e8f0;
         }
-        .text-gray-700 { color: #4b5563; }
-        .text-gray-800 { color: #1f2937; }
-        .text-gray-600 { color: #4b5563; }
-        .text-gray-400 { color: #9ca3af; }
-        .bg-white { background-color: #ffffff; }
-        .bg-gray-50 { background-color: #f9fafb; }
-        .border-gray-200 { border-color: #e5e7eb; }
-        .border-gray-300 { border-color: #d1d5db; }
-       
-        body.dark-mode .text-gray-700,
-        body.dark-mode .text-gray-600,
-        body.dark-mode .text-gray-800 { color: #e2e8f0; }
 
-
+        /* General dark mode overrides */
         body.dark-mode .bg-white { background-color: #2d3748; }
         body.dark-mode .bg-gray-50 { background-color: #4a5568; }
         body.dark-mode .border-gray-200 { border-color: #4a5568; }
         body.dark-mode .border-gray-300 { border-color: #6b7280; }
+        body.dark-mode .text-gray-800,
+        body.dark-mode .text-gray-700,
+        body.dark-mode .text-gray-600,
+        body.dark-mode .text-gray-400 { color: #e2e8f0; }
+
         body.dark-mode .disabled-element,
         body.dark-mode input:disabled,
         body.dark-mode select:disabled {
             background-color: #4a5568;
             color: #a0aec0;
         }
-
 
         .table-custom th, .table-custom td {
             padding: 0.75rem;
@@ -79,13 +72,6 @@
             color: #9ca3af;
         }
        
-        .results-table td {
-            font-weight: 500;
-            color: #1f2937;
-        }
-        body.dark-mode .results-table td {
-            color: #e2e8f0;
-        }
         .calculated-value {
             font-weight: bold;
             color: #10b981;
@@ -94,16 +80,56 @@
             color: #38a169;
         }
        
-        .text-red-700 { color: #b91c1c; }
-        .bg-red-100 { background-color: #fef2f2; }
         body.dark-mode .text-red-700 { color: #fca5a5; }
         body.dark-mode .bg-red-100 { background-color: #7f1d1d; }
-
 
         #moonIcon { color: #1f2937; }
         #sunIcon { color: #f59e0b; }
         body.dark-mode #moonIcon { color: #e2e8f0; }
-        body.dark-mode #sunIcon { color: #f59e0b; }
+
+        #languageSelectorBtn .language-text {
+            color: #4b5563; 
+            font-weight: 500;
+        }
+        body.dark-mode #languageSelectorBtn .language-text {
+            color: #e2e8f0;
+        }
+
+        /* Explicit hover style for the main language button to ensure visibility */
+        #languageSelectorBtn:hover {
+            background-color: #f3f4f6; /* Very light gray for light mode hover */
+        }
+        body.dark-mode #languageSelectorBtn:hover {
+            background-color: #374151; /* gray-700 for dark mode hover */
+        }
+
+        /* Explicit styling for the language dropdown */
+        #languageOptions {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+        body.dark-mode #languageOptions {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        #languageOptions button {
+            color: #374151;
+        }
+        body.dark-mode #languageOptions button {
+            color: #d1d5db;
+        }
+
+        /* Hover effect for language options */
+        #languageOptions button:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        body.dark-mode #languageOptions button:hover {
+            background-color: #4b5568;
+            color: #ffffff;
+        }
+        
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
@@ -111,13 +137,17 @@
         <!-- Header with Toggles -->
         <div class="absolute top-4 right-4 flex items-center space-x-4">
              <!-- Language Selector -->
-            <div>
-                <select id="languageSelector" onchange="changeLanguage()" class="block w-full pl-3 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
-                    <option value="pl">Polski</option>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="zh">中文</option>
-                </select>
+            <div class="relative">
+                <button id="languageSelectorBtn" class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200">
+                    <i class="fas fa-globe ml-2 text-gray-700 dark:text-gray-300"></i>
+                    <span class="language-text" data-translate="languages_label">Languages</span>
+                </button>
+                <div id="languageOptions" class="absolute right-0 mt-2 w-32 rounded-md shadow-lg z-10 hidden">
+                    <button class="block w-full text-left px-4 py-2 text-sm transition-colors duration-150" onclick="selectLanguage('pl')">Polski</button>
+                    <button class="block w-full text-left px-4 py-2 text-sm transition-colors duration-150" onclick="selectLanguage('en')">English</button>
+                    <button class="block w-full text-left px-4 py-2 text-sm transition-colors duration-150" onclick="selectLanguage('es')">Español</button>
+                    <button class="block w-full text-left px-4 py-2 text-sm transition-colors duration-150" onclick="selectLanguage('zh')">中文</button>
+                </div>
             </div>
             <!-- Dark Mode Toggle Button -->
             <button id="darkModeToggle" onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
@@ -131,7 +161,7 @@
         </div>
 
 
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 pt-8" data-translate="main_title">Zaawansowany Kalkulator</h1>
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 pt-8" data-translate="main_title">Zaawansowany Kalkulator Przewody</h1>
         <div class="space-y-6">
 
 
@@ -342,6 +372,15 @@
                 
                 <div id="ac_results" class="mt-4 hidden">
                     <h3 class="text-lg font-semibold text-gray-700" data-translate="ac_results_title">Wyniki dla prądu zmiennego (AC)</h3>
+                    
+                    <!-- New div for calculated current -->
+                    <div id="acCalculatedCurrentDisplay" class="mt-2 mb-4 p-3 bg-blue-50 rounded-md border border-blue-200 hidden">
+                        <p class="text-base font-medium text-blue-800">
+                            <span data-translate="calculated_current_label">Obliczony prąd [A]:</span>
+                            <span id="acCalculatedCurrent" class="font-bold text-blue-900 ml-2"></span>
+                        </p>
+                    </div>
+
                     <div class="overflow-x-auto mt-2">
                         <table class="w-full table-custom results-table">
                             <thead>
@@ -352,10 +391,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr id="acCalculatedCurrentRow">
-                                    <td data-translate="calculated_current_label">Obliczony prąd [A]</td>
-                                    <td id="acCalculatedCurrent" colspan="2"></td>
-                                </tr>
                                 <tr>
                                     <td data-translate="wire_header">Przewód</td>
                                     <td id="acWireVoltageDrop"></td>
@@ -386,7 +421,7 @@
                     <h3 class="text-lg font-semibold text-gray-700 mb-4" data-translate="formulas_title">Używane wzory:</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-center">
                         <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_voltage_drop_dc">Spadek napięcia (DC): $$\\Delta U_{DC} = I \cdot R$$</div>
-                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_power_loss">Straty mocy: $$P = I^2 \cdot R$$</div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_power_loss">Straty mocy: $$P = I^2 \\cdot R$$</div>
                         <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_current_ac1">Prąd (AC 1-faza): $$I = \\frac{P}{U \\cdot \\cos(\\phi)}$$</div>
                         <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_current_ac3">Prąd (AC 3-fazy): $$I = \\frac{P}{\\sqrt{3} \\cdot U \\cdot \\cos(\\phi)}$$</div>
                         <div class="bg-white border border-gray-200 p-4 rounded-lg" data-translate="formula_voltage_drop_ac1">Spadek napięcia (AC 1-faza): $$\\Delta U_{AC1} = I \\cdot R$$</div>
@@ -404,15 +439,15 @@
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-start space-x-3">
                             <svg class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.636-1.21 2.37-1.21 3.006 0l5.426 10.36c.622 1.188-.234 2.64-1.503 2.64H4.334c-1.269 0-2.125-1.452-1.503-2.64L8.257 3.099zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
-                            <span data-translate="note1_new">Wartości 'Max I [A] (10s i spalenie)' oraz '[A] (ciągły)' to wartości maksymalne. Przekroczenie prądu ciągłego może prowadzić do nadmiernego nagrzewania się kabli i wtyczek.</span>
+                            <span data-translate="note1_new">Przekroczenie prądu ciągłego prowadzi do nadmiernego nagrzewania się komponentów. Wartości 'Max' określają prąd, który może spowodować trwałe uszkodzenie.</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
-                            <span data-translate="note2_new">Wartości 'Max I [A] (10s i spalenie)' oznaczają czas, po którym wystąpią trwałe uszkodzenia, jeśli przekroczony zostanie maksymalny prąd.</span>
+                            <span data-translate="note2_new">Wartość 'Max I [A] (10s)' to prąd, który po 10 sekundach może trwale uszkodzić komponent.</span>
                         </li>
                          <li class="flex items-start space-x-3">
                             <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
-                            <span data-translate="note3_new">Dla danych niestandardowych, wartości prądów są przybliżone i nie zostały poddane testom (program może je zaniżać).</span>
+                            <span data-translate="note3_new">Obliczenia prądów dla danych niestandardowych są szacunkowe i oparte na wzorze empirycznym. Mogą różnić się od wartości rzeczywistych.</span>
                         </li>
                         <li class="flex items-start space-x-3">
                            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
@@ -420,7 +455,7 @@
                         </li>
                         <li class="flex items-start space-x-3">
                            <svg class="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.362 1.096a.75.75 0 00-.724 0L2.535 5.269A.75.75 0 002 5.952v8.096a.75.75 0 00.535.683l7.103 4.176a.75.75 0 00.724 0l7.103-4.176a.75.75 0 00.535-.683V5.952a.75.75 0 00-.535-.683L10.362 1.096zM11 1.954v6.89l6-3.518L11 1.954zM9 1.954L3 5.472l6 3.372V1.954zm0 8.845v6.247l-6-3.696V8.703l6 3.096zM11 17.046V10.8l6-3.096v6.15l-6 3.696z" /></svg>
-                           <span data-translate="note5_new"><b>Uwaga</b>: Wzór na prąd jest przeznaczony dla kabli miedzianych.</span>
+                            <span data-translate="note5_new"><b>Uwaga</b>: Wzór na prąd jest przeznaczony dla kabli miedzianych.</span>
                         </li>
                         <li class="flex items-start space-x-3">
                            <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-1.25 12.25a.75.75 0 010-1.5.75.75 0 010 1.5zm.75-8.25c-.93 0-1.75.7-1.75 1.75v1.5a1.75 1.75 0 003.5 0v-1.5c0-1.05-.82-1.75-1.75-1.75zM10 12a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 12z" /></svg>
@@ -428,7 +463,7 @@
                         </li>
                         <li class="flex items-start space-x-3">
                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0v-4a1 1 0 00-1-1z" /></svg>
-                           <span data-translate="note7_new"><b>Korekta Terminu:</b> Termin "sprawność cos(φ)" jest uproszczeniem. W elektrotechnice "sprawność" to $\eta$, natomiast "współczynnik mocy" to $\cos(\phi)$. W tym kalkulatorze, pole to odnosi się do współczynnika mocy.</span>
+                           <span data-translate="note7_new"><b>Korekta Terminu:</b> Termin "sprawność cos(φ)" jest uproszczeniem. W elektrotechnice "sprawność" to $\\eta$, natomiast "współczynnik mocy" to $\\cos(\\phi)$. W tym kalkulatorze, pole to odnosi się do współczynnika mocy.</span>
                         </li>
                     </ul>
                 </div>
@@ -441,7 +476,7 @@
         // --- TRANSLATIONS ---
         const translations = {
             pl: {
-                main_title: "Zaawansowany Kalkulator",
+                main_title: "Zaawansowany Kalkulator Przewody",
                 power_type_dc_label: "Prąd stały (DC)",
                 power_type_ac_label: "Prąd zmienny (AC)",
                 ac_params_title: "Parametry dla AC:",
@@ -495,9 +530,9 @@
                 formula_custom_current: "Prąd dla niestandardowego przewodu: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
                 formula_custom_current_where: "gdzie: Y=1 dla prądu ciągłego, Y=1.3 dla prądu przy 100°C, oraz Y=4.5 dla prądu maksymalnego (10s).",
                 notes_title: "Uwagi:",
-                note1_new: "Wartości 'Max I [A] (10s i spalenie)' oraz '[A] (ciągły)' to wartości maksymalne. Przekroczenie prądu ciągłego może prowadzić do nadmiernego nagrzewania się kabli i wtyczek.",
-                note2_new: "Wartości 'Max I [A] (10s i spalenie)' oznaczają czas, po którym wystąpią trwałe uszkodzenia, jeśli przekroczony zostanie maksymalny prąd.",
-                note3_new: "Dla danych niestandardowych, wartości prądów są przybliżone i nie zostały poddane testom (program może je zaniżać).",
+                note1_new: "Przekroczenie prądu ciągłego prowadzi do nadmiernego nagrzewania się komponentów. Wartości 'Max' określają prąd, który może spowodować trwałe uszkodzenie.",
+                note2_new: "Wartość 'Max I [A] (10s)' to prąd, który po 10 sekundach może trwale uszkodzić komponent.",
+                note3_new: "Obliczenia prądów dla danych niestandardowych są szacunkowe i oparte na wzorze empirycznym. Mogą różnić się od wartości rzeczywistych.",
                 note4_new: "W kalkulatorze uwzględniono oporność zarówno przewodu dodatniego, jak i ujemnego (długość kabla jest mnożona przez 2).",
                 note5_new: "<b>Uwaga</b>: Wzór na prąd jest przeznaczony dla kabli miedzianych.",
                 note6_new: "<b>Uwaga</b>: Spadek napięcia dla prądu jednofazowego jest uproszczony i nie uwzględnia reaktancji. Spadek napięcia dla prądu trójfazowego jest spadkiem napięcia między fazami.",
@@ -514,15 +549,15 @@
                 error_invalid_length: "Proszę wprowadzić prawidłową długość kabla, jeśli przewód jest wybrany.",
                 error_no_component: "Proszę wybrać co najmniej przewód lub wtyczkę.",
                 error_invalid_ac_inputs: "Proszę wprowadzić prawidłowe wartości mocy, napięcia i współczynnika mocy.",
-                warn_continuous_wire: "UWAGA: Prąd przekracza prąd ciągły dla przewodu.",
-                warn_100c_wire: "OSTRZEŻENIE: Prąd przekracza prąd dla wysokich temperatur dla przewodu.",
-                warn_10s_wire: "OSTRZEŻENIE: Prąd przekracza maksymalny prąd (10s) dla przewodu, co może prowadzić do jego spalenia.",
-                warn_continuous_connector: "UWAGA: Prąd przekracza prąd ciągły dla wtyczki.",
-                warn_100c_connector: "OSTRZEŻENIE: Prąd przekracza prąd dla wysokich temperatur dla wtyczki.",
-                warn_10s_connector: "OSTRZEŻENIE: Prąd przekracza maksymalny prąd (10s) dla wtyczki, co może prowadzić do jej spalenia."
+                warn_continuous_wire: "Ostrzeżenie: Prąd przekracza dopuszczalny prąd ciągły dla przewodu.",
+                warn_100c_wire: "Ryzyko: Prąd przekracza dopuszczalny prąd dla przewodu w podwyższonej temperaturze.",
+                warn_10s_wire: "Niebezpieczeństwo: Prąd grozi trwałym uszkodzeniem (spaleniem) przewodu.",
+                warn_continuous_connector: "Ostrzeżenie: Prąd przekracza dopuszczalny prąd ciągły dla wtyczki.",
+                warn_100c_connector: "Ryzyko: Prąd przekracza dopuszczalny prąd dla wtyczki w podwyższonej temperaturze.",
+                warn_10s_connector: "Niebezpieczeństwo: Prąd grozi trwałym uszkodzeniem (spaleniem) wtyczki."
             },
             en: {
-                main_title: "Advanced Calculator",
+                main_title: "Advanced Wire Calculator",
                 power_type_dc_label: "Direct Current (DC)",
                 power_type_ac_label: "Alternating Current (AC)",
                 ac_params_title: "AC Parameters:",
@@ -576,9 +611,9 @@
                 formula_custom_current: "Current for custom wire: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
                 formula_custom_current_where: "where: Y=1 for continuous current, Y=1.3 for 100°C current, and Y=4.5 for max current (10s).",
                 notes_title: "Notes:",
-                note1_new: "'Max I [A] (10s & burnout)' and '[A] (continuous)' are maximum values. Exceeding continuous current can lead to excessive heating of cables and connectors.",
-                note2_new: "'Max I [A] (10s & burnout)' indicates the time after which permanent damage may occur if the maximum current is exceeded.",
-                note3_new: "For custom data, the current values are approximate and have not been tested (the program may underestimate them).",
+                note1_new: "Exceeding the continuous current rating leads to excessive heating of components. 'Max' values indicate currents that may cause permanent damage.",
+                note2_new: "The 'Max I [A] (10s)' value is the current that can permanently damage the component after 10 seconds.",
+                note3_new: "Current calculations for custom data are estimates based on an empirical formula and may differ from real-world values.",
                 note4_new: "The calculator accounts for the resistance of both the positive and negative wires (cable length is multiplied by 2).",
                 note5_new: "<b>Note</b>: The current formula is designed for copper cables.",
                 note6_new: "<b>Note</b>: The voltage drop for single-phase AC is simplified and does not account for reactance. The voltage drop for three-phase AC is the line-to-line voltage drop.",
@@ -595,15 +630,15 @@
                 error_invalid_length: "Please enter a valid cable length if a wire is selected.",
                 error_no_component: "Please select at least a wire or a connector.",
                 error_invalid_ac_inputs: "Please enter valid power, voltage, and power factor values.",
-                warn_continuous_wire: "CAUTION: Current exceeds the continuous rating for the wire.",
-                warn_100c_wire: "WARNING: Current exceeds the high-temperature rating for the wire.",
-                warn_10s_wire: "WARNING: Current exceeds the maximum (10s) rating for the wire, which can lead to burnout.",
-                warn_continuous_connector: "CAUTION: Current exceeds the continuous rating for the connector.",
-                warn_100c_connector: "WARNING: Current exceeds the high-temperature rating for the connector.",
-                warn_10s_connector: "WARNING: Current exceeds the maximum (10s) rating for the connector, which can lead to burnout."
+                warn_continuous_wire: "Warning: Current exceeds the continuous rating for the wire.",
+                warn_100c_wire: "Risk: Current exceeds the high-temperature rating for the wire.",
+                warn_10s_wire: "Danger: Current threatens permanent damage (burnout) to the wire.",
+                warn_continuous_connector: "Warning: Current exceeds the continuous rating for the connector.",
+                warn_100c_connector: "Risk: Current exceeds the high-temperature rating for the connector.",
+                warn_10s_connector: "Danger: Current threatens permanent damage (burnout) to the connector."
             },
             es: {
-                main_title: "Calculadora Avanzada",
+                main_title: "Calculadora Avanzada de Cables",
                 power_type_dc_label: "Corriente Continua (DC)",
                 power_type_ac_label: "Corriente Alterna (AC)",
                 ac_params_title: "Parámetros para AC:",
@@ -657,9 +692,9 @@
                 formula_custom_current: "Corriente para cable personalizado: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
                 formula_custom_current_where: "donde: Y=1 para corriente continua, Y=1.3 para 100°C, y Y=4.5 para corriente máxima (10s).",
                 notes_title: "Notas:",
-                note1_new: "'Máx I [A] (10s y quemado)' y '[A] (continuo)' son valores máximos. Superar la corriente continua puede causar calentamiento excesivo.",
-                note2_new: "'Máx I [A] (10s y quemado)' indica el tiempo tras el cual puede ocurrir daño permanente si se excede la corriente máxima.",
-                note3_new: "Para datos personalizados, los valores de corriente son aproximados y no han sido probados (el programa puede subestimarlos).",
+                note1_new: "Superar la corriente continua nominal provoca un calentamiento excesivo de los componentes. Los valores 'Máx' indican corrientes que pueden causar daños permanentes.",
+                note2_new: "El valor 'Máx I [A] (10s)' es la corriente que puede dañar permanentemente el componente después de 10 segundos.",
+                note3_new: "Los cálculos de corriente para datos personalizados son estimaciones basadas en una fórmula empírica y pueden diferir de los valores reales.",
                 note4_new: "La calculadora considera la resistencia de los cables positivo y negativo (la longitud del cable se multiplica por 2).",
                 note5_new: "<b>Nota</b>: La fórmula de corriente es para cables de cobre.",
                 note6_new: "<b>Nota</b>: La caída de tensión para CA monofásica se simplifica y no considera la reactancia. La caída de tensión para CA trifásica es la caída de tensión línea-a-línea.",
@@ -676,15 +711,15 @@
                 error_invalid_length: "Por favor, introduzca una longitud de cable válida si se selecciona un cable.",
                 error_no_component: "Por favor, seleccione al menos un cable o un conector.",
                 error_invalid_ac_inputs: "Por favor, introduzca valores válidos de potencia, voltaje y factor de potencia.",
-                warn_continuous_wire: "PRECAUCIÓN: La corriente excede la nominal continua del cable.",
-                warn_100c_wire: "ADVERTENCIA: La corriente excede la nominal de alta temperatura del cable.",
-                warn_10s_wire: "ADVERTENCIA: La corriente excede la nominal máxima (10s) del cable, lo que puede quemarlo.",
-                warn_continuous_connector: "PRECAUCIÓN: La corriente excede la nominal continua del conector.",
-                warn_100c_connector: "ADVERTENCIA: La corriente excede la nominal de alta temperatura del conector.",
-                warn_10s_connector: "ADVERTENCIA: La corriente excede la nominal máxima (10s) del conector, lo que puede quemarlo."
+                warn_continuous_wire: "Advertencia: La corriente excede la nominal continua del cable.",
+                warn_100c_wire: "Riesgo: La corriente excede la nominal de alta temperatura del cable.",
+                warn_10s_wire: "Peligro: La corriente amenaza con dañar permanentemente (quemar) el cable.",
+                warn_continuous_connector: "Advertencia: La corriente excede la nominal continua del conector.",
+                warn_100c_connector: "Riesgo: La corriente excede la nominal de alta temperatura del conector.",
+                warn_10s_connector: "Peligro: La corriente amenaza con dañar permanentemente (quemar) el conector."
             },
             zh: {
-                main_title: "高级计算器",
+                main_title: "高级电缆计算器",
                 power_type_dc_label: "直流电 (DC)",
                 power_type_ac_label: "交流电 (AC)",
                 ac_params_title: "交流电参数:",
@@ -738,9 +773,9 @@
                 formula_custom_current: "自定义电线电流: $$I = \\sqrt{\\frac{g \\cdot Y}{R}}$$",
                 formula_custom_current_where: "其中: Y=1 对应连续电流, Y=1.3 对应100°C电流, Y=4.5 对应最大电流 (10秒).",
                 notes_title: "说明:",
-                note1_new: "'最大 I [A] (10秒并烧毁)' 和 '[A] (连续)' 是最大值。超过连续电流可能导致电缆和连接器过热。",
-                note2_new: "'最大 I [A] (10秒并烧毁)' 表示如果超过最大电流，可能发生永久性损坏的时间。",
-                note3_new: "对于自定义数据, 电流值是近似值，未经测试（程序可能低估它们）。",
+                note1_new: "超过连续电流额定值会导致组件过热。'最大'值表示可能导致永久性损坏的电流。",
+                note2_new: "'最大 I [A] (10秒)'值是在10秒后可能永久损坏组件的电流。",
+                note3_new: "自定义数据的电流计算是基于经验公式的估算值，可能与实际值不同。",
                 note4_new: "计算器考虑了正负两根电线的电阻 (电缆长度乘以2)。",
                 note5_new: "<b>注意</b>: 电流公式专为铜缆设计。",
                 note6_new: "<b>注意</b>: 交流单相的电压降被简化，未考虑电抗。交流三相的电压降是线间电压降。",
@@ -757,12 +792,12 @@
                 error_invalid_length: "如果选择了电线，请输入有效的电缆长度。",
                 error_no_component: "请至少选择电线或连接器。",
                 error_invalid_ac_inputs: "请输入有效的功率、电压和功率因数。",
-                warn_continuous_wire: "注意：电流超过电线的连续额定值。",
-                warn_100c_wire: "警告：电流超过电线的高温额定值。",
-                warn_10s_wire: "警告：电流超过电线的最大额定值（10秒），可能导致烧毁。",
-                warn_continuous_connector: "注意：电流超过连接器的连续额定值。",
-                warn_100c_connector: "警告：电流超过连接器的高温额定值。",
-                warn_10s_connector: "警告：电流超过连接器的最大额定值（10秒），可能导致烧毁。"
+                warn_continuous_wire: "警告：电流超过电线的连续额定值。",
+                warn_100c_wire: "风险：电流超过电线的高温额定值。",
+                warn_10s_wire: "危险：电流可能对电线造成永久性损坏（烧毁）。",
+                warn_continuous_connector: "警告：电流超过连接器的连续额定值。",
+                warn_100c_connector: "风险：电流超过连接器的高温额定值。",
+                warn_10s_connector: "危险：电流可能对连接器造成永久性损坏（烧毁）。"
             }
         };
 
@@ -869,6 +904,7 @@
             // Clear results when toggling inputs
             document.getElementById('dc_results').classList.add('hidden');
             document.getElementById('ac_results').classList.add('hidden');
+            document.getElementById('acCalculatedCurrentDisplay').classList.add('hidden'); // Hide calculated current display
         }
         
         function togglePowerType() {
@@ -889,6 +925,7 @@
             // Clear results when changing power type
             document.getElementById('dc_results').classList.add('hidden');
             document.getElementById('ac_results').classList.add('hidden');
+            document.getElementById('acCalculatedCurrentDisplay').classList.add('hidden'); // Hide calculated current display
         }
 
 
@@ -937,7 +974,7 @@
             if (isPredefined) {
                 wireTypeSelect.disabled = noWire;
                 wireTypeSelect.classList.toggle('disabled-element', noWire);
-                document.querySelector('label[for="wireType"]').classList.toggle('text-gray-400', noWire);
+                document.querySelector(`label[for="wireType"]`).classList.toggle('text-gray-400', noWire);
                 if (!noWire) {
                     const wireType = wireTypeSelect.value;
                     const selectedWire = fullWireData[wireType];
@@ -970,7 +1007,7 @@
             if (isPredefined) {
                 connectorTypeSelect.disabled = noConnector;
                 connectorTypeSelect.classList.toggle('disabled-element', noConnector);
-                document.querySelector('label[for="connectorType"]').classList.toggle('text-gray-400', noConnector);
+                document.querySelector(`label[for="connectorType"]`).classList.toggle('text-gray-400', noConnector);
                 if (!noConnector) {
                     const connectorType = connectorTypeSelect.value;
                     const selectedConnector = fullConnectorData[connectorType];
@@ -998,6 +1035,7 @@
             // Clear results when updating details
             document.getElementById('dc_results').classList.add('hidden');
             document.getElementById('ac_results').classList.add('hidden');
+            document.getElementById('acCalculatedCurrentDisplay').classList.add('hidden'); // Hide calculated current display
         }
        
         function calculateLosses() {
@@ -1019,6 +1057,7 @@
             messageBox.classList.add('hidden');
             document.getElementById('dc_results').classList.add('hidden');
             document.getElementById('ac_results').classList.add('hidden');
+            document.getElementById('acCalculatedCurrentDisplay').classList.add('hidden'); // Always hide first, then show if needed
             
             let current;
             if (isAC && calcFromPower) {
@@ -1037,6 +1076,7 @@
                     current = motorPower / (Math.sqrt(3) * motorVoltage * powerFactor);
                 }
                 document.getElementById('acCalculatedCurrent').textContent = current.toFixed(4);
+                document.getElementById('acCalculatedCurrentDisplay').classList.remove('hidden'); // Show calculated current display
             } else {
                 current = parseFloat(document.getElementById('current').value);
                 if (isNaN(current) || current <= 0) {
@@ -1135,7 +1175,6 @@
                 document.getElementById('acTotalVoltageDrop').textContent = totalVoltageDrop.toFixed(4);
                 document.getElementById('acTotalPowerLoss').textContent = totalPowerLoss.toFixed(4);
                 
-                document.getElementById('acCalculatedCurrentRow').classList.toggle('hidden', !calcFromPower);
             } else {
                 document.getElementById('dc_results').classList.remove('hidden');
                 document.getElementById('dcWireVoltageDrop').textContent = wireVoltageDrop.toFixed(4);
@@ -1186,16 +1225,30 @@
             }
            
             const savedLang = localStorage.getItem('userLanguage') || 'pl';
-            document.getElementById('languageSelector').value = savedLang;
+            // No longer setting value on a select, as it's a custom dropdown now.
+            // document.getElementById('languageSelector').value = savedLang; 
            
             populateDropdowns();
             setLanguage(savedLang);
             toggleInputFields();
             togglePowerType();
             calculateCustomWireCurrents();
+
+            // Add event listener for the new language selector button
+            document.getElementById('languageSelectorBtn').addEventListener('click', () => {
+                document.getElementById('languageOptions').classList.toggle('hidden');
+            });
         };
+
+        // New function for selecting language from the custom dropdown buttons
+        function selectLanguage(lang) {
+            setLanguage(lang);
+            document.getElementById('languageOptions').classList.add('hidden'); // Hide dropdown after selection
+        }
     </script>
 </body>
 </html>
+
+
 
 
