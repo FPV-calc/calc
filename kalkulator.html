@@ -1161,7 +1161,7 @@
 
                     const totalMassG = droneMassG + batteryMassG + additionalPayloadMassG;
                     const totalMassKg = totalMassG / 1000;
-                    const totalThrustNeededForHoverN = totalMassKg * GRAVITY * 1.1;
+                    const totalThrustNeededForHoverN = totalMassKg * GRAVITY * 1.02;
                     const thrustPerMotorNeededForHoverN = totalThrustNeededForHoverN / NUM_MOTORS;
                     const thrustPerMotorNeededForHoverG = thrustPerMotorNeededForHoverN * NEWTONS_TO_GRAMS;
 
@@ -1293,5 +1293,6 @@
     </script>
 </body>
 </html>
+
 
 
